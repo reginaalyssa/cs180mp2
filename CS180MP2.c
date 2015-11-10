@@ -5,13 +5,13 @@
 
 typedef struct dataentry
 {
-    char * gender;
-    char * yearlevel;
-    char * freetime;
-    char * socialskills;
-    char * units;
+    char gender[LENGTH];
+    char yearlevel[LENGTH];
+    char freetime[LENGTH];
+    char socialskills[LENGTH];
+    char units[LENGTH];
     int orgs;
-    char * join;
+    char join[LENGTH];
     struct dataentry * next;
 } dataentry;
 
@@ -34,7 +34,26 @@ int main()
 		return;
 	}
 
-	while(fgets(strInput, LENGTH, file)!=NULL)
+	test=malloc(sizeof(dataentry));
+	fscanf(file, "%s, ", &test->gender);
+	printf("%s\n", test->gender);
+	fscanf(file, "%s, ", &test->yearlevel);
+	printf("%s\n", test->yearlevel);
+	fscanf(file, "%s, ", &test->freetime);
+	printf("%s\n", test->freetime);
+	fscanf(file, "%s, ", &test->socialskills);
+	printf("%s\n", test->socialskills);
+	fscanf(file, "%s, ", &test->units);
+	printf("%s\n", test->units);
+	fscanf(file, "%d, ", &test->orgs);
+	printf("%d\n, ", test->orgs);
+	fscanf(file, "%s, ", &test->join);
+	printf("%s\n", test->join);
+	//fscanf(file, "%s, %s, %s, %s, %s, %d, %s\n", &test->gender, &test->yearlevel, &test->freetime, &test->socialskills, &test->units, &test->orgs, &test->join);
+	//printf("%s, %s, %s, %s, %s, %d, %s\n", test->gender, test->yearlevel, test->freetime, test->socialskills, test->units, test->orgs, test->join);
+	//fgets(strInput, LENGTH, file);
+	//printf("%s\n", strInput);
+	/*while(fgets(strInput, LENGTH, file)!=NULL)
 	{
 		test=malloc(sizeof(dataentry));
 		removeNewline(strInput);
@@ -89,12 +108,11 @@ int main()
     	}
     	tail=test;
 
-		/*for(j=0; j<i; j++)
+		for(j=0; j<i; j++)
 		{
 			printf("|%s|, ", tokens[j]);
-		}*/
-		printf("\n");
-	}
+		}
+	}*/
 }
 
 
