@@ -103,12 +103,13 @@ int main()
 	}
 
 	fscanf(file2, "%d\n", &nvalues);
+	struct attnode * curr;
 	for(i=0; i<nvalues; i++)
 	{
 		for(valuesize=0; valuesize<nattributes; valuesize++)
 		{
 			fscanf(file2, "%s ", strInput);
-			curr=head;
+			curr=test.head;
 			while(curr!=NULL)
 			{
 				if(strcmp(strInput, curr->attname)==0)
@@ -122,13 +123,13 @@ int main()
 		}
 	}
 
-	printf("\n");/*
+	printf("\n");	
 
-	for(i=0; i<nvalues; i++)
+	/*for(i=0; i<nvalues; i++)
 	{
 		for(valuesize=0; valuesize<nattributes; valuesize++)
 		{
-			curr=head;
+			curr=test.head;
 			while(curr!=NULL)
 			{
 				if(values[i][valuesize]==curr->equivalent)
@@ -202,13 +203,8 @@ void showList(att * foo)
 {
 	struct attnode * curr;
 	curr=foo->head;
-	if(foo->head==NULL)
+	if(foo->head!=NULL)
 	{
-		printf("\nQueue: empty queue\n");
-	}
-	else
-	{
-		printf("\nQueue:\n");
 		while(curr!=NULL)
 		{
 			printf("%s %d %d %d\n", curr->attname, curr->x, curr->y, curr->equivalent);
