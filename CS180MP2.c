@@ -27,6 +27,8 @@ char * removeNewline(char * str);
 void init(att * foo);
 void addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent);
 void showList(att * foo);
+int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
+int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 
 int main()
 {
@@ -60,7 +62,7 @@ int main()
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
-		return;
+		return 0;
 	}
 
 	fscanf(file, "%d\n", &nattributes);
@@ -99,14 +101,14 @@ int main()
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
-		return;
+		return 0;
 	}
 
 	fscanf(file2, "%d\n", &nvalues);
 	struct attnode * curr;
 	for(i=0; i<nvalues; i++)
 	{
-		for(valuesize=0; valuesize<nattributes; valuesize++)
+		for(j=0; j<nattributes; j++)
 		{
 			fscanf(file2, "%s ", strInput);
 			curr=test.head;
@@ -118,32 +120,34 @@ int main()
 				}
 				curr=curr->next;
 			}
-			values[i][valuesize]=curr->equivalent;
+			values[i][j]=curr->equivalent;
 
 		}
 	}
 
 	printf("\n");	
 
-	/*for(i=0; i<nvalues; i++)
+	for(i=0; i<nvalues; i++)
 	{
-		for(valuesize=0; valuesize<nattributes; valuesize++)
+		for(j=0; j<nattributes; j++)
 		{
-			curr=test.head;
+			/*curr=test.head;
 			while(curr!=NULL)
 			{
-				if(values[i][valuesize]==curr->equivalent)
+				if(values[i][j]==curr->equivalent)
 				{
 					break;
 				}
 				curr=curr->next;
 			}
-			printf("%s ", curr->attname);
+			printf("%s ", curr->attname);*/
+			printf("%d ", values[i][j]);
 		}
 		printf("\n");
-	}*/
+	}
 
-	//positiveValues(NULL, 1, values, valuesize, nattributes, test, head);
+	positiveValues(1, 5, values, nvalues, nattributes, &test);
+	negativeValues(1, 5, values, nvalues, nattributes, &test);
 }
 
 char * removeNewline(char * str)
@@ -213,14 +217,45 @@ void showList(att * foo)
 	}
 }
 
-/*int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int valuesize, int nattributes, attnode * test)
+int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
 {
-	attnode * curr;
-	attnode * yes;
-	int i, j;
-	if(S!=NULL)
+	struct attnode * curr;
+	struct attnode * yes;
+	int i, j, k;
+	int positivectr=0;
+	// With all S palang 'to
+	if(S==0)
 	{
-		// Stuff
+		yes=test->head;
+		while(yes!=NULL)
+		{
+			if(strcmp(yes->attname, "Yes")==0)
+			{
+				break;
+			}
+			yes=yes->next;
+		}
+
+		for(i=0; i<nvalues; i++)
+		{
+			if(attribute==0)
+			{
+				if(values[i][nattributes-1]==yes->equivalent)
+				{
+					positivectr++;
+				}
+			}
+			else
+			{
+				for(j=0; j<nattributes; j++)
+				{
+					if(values[i][j]==attribute && values[i][nattributes-1]==yes->equivalent)
+					{
+						positivectr++;
+					}
+				}
+			}
+		}
 	}
 	else
 	{
@@ -237,35 +272,118 @@ void showList(att * foo)
 		yes=test->head;
 		while(yes!=NULL)
 		{
-			if(yes->attname=="Yes")
+			if(strcmp(yes->attname, "Yes")==0)
 			{
 				break;
 			}
 			yes=yes->next;
 		}
 
-		for(i=0; i<valuesize; i++)
+		for(i=0; i<nvalues; i++)
 		{
 			for(j=0; j<nattributes; j++)
 			{
-				if(values[i][j]==attribute && values[i][nattributes-1]==yes->equivalent)
+				for(k=0; k<nattributes; k++)
 				{
-					printf("Uy may isang yes.\n");
+					if(values[i][k]==S && values[i][j]==attribute && values[i][nattributes-1]==yes->equivalent)
+					{
+						positivectr++;
+					}
 				}
 			}
 		}
 	}
+	printf("Positive: %d\n", positivectr);
+	return positivectr;
 
 }
 
-int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int valuesize, int nattributes)
+int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
 {
-	if(S!=NULL)
+	struct attnode * curr;
+	struct attnode * no;
+	int i, j, k;
+	int negativectr=0;
+	if(S==0)
 	{
-		//Stuff
+		/*curr=test->head;
+		while(curr!=NULL)
+		{
+			if(curr->equivalent==attribute)
+			{
+				break;
+			}
+			curr=curr->next;
+		} Use this if may value na attribute and S na hindi 0*/
+
+		no=test->head;
+		while(no!=NULL)
+		{
+			if(strcmp(no->attname, "No")==0)
+			{
+				break;
+			}
+			no=no->next;
+		}
+
+		for(i=0; i<nvalues; i++)
+		{
+			if(attribute==0)
+			{
+				if(values[i][nattributes-1]==no->equivalent)
+				{
+					negativectr++;
+				}
+			}
+			else
+			{
+				for(j=0; j<nattributes; j++)
+				{
+					if(values[i][j]==attribute && values[i][nattributes-1]==no->equivalent)
+					{
+						negativectr++;
+					}
+				}
+			}
+		}
 	}
 	else
 	{
+		curr=test->head;
+		while(curr!=NULL)
+		{
+			if(curr->equivalent==attribute)
+			{
+				break;
+			}
+			curr=curr->next;
+		}
 
+		no=test->head;
+		while(no!=NULL)
+		{
+			if(strcmp(no->attname, "No")==0)
+			{
+				break;
+			}
+			no=no->next;
+		}
+
+		for(i=0; i<nvalues; i++)
+		{
+			for(j=0; j<nattributes; j++)
+			{
+				for(k=0; k<nattributes; k++)
+				{
+					if(values[i][k]==S && values[i][j]==attribute && values[i][nattributes-1]==no->equivalent)
+					{
+						negativectr++;
+					}
+					//printf("[%d][%d]%d==%d && [%d][%d]%d==%d && [%d][%d]%d==%d\n", i, k, values[i][k], S, i, j, values[i][j], attribute, i, nattributes-1, values[i][nattributes-1], no->equivalent);
+				}
+			}
+		}
 	}
-}*/
+	printf("Negative: %d\n", negativectr);
+	return negativectr;
+}
