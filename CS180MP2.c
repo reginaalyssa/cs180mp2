@@ -95,7 +95,7 @@ int main()
 		Rain Cool Normal Light Yes 		// 5th input value
 	*/
 
-	file2=fopen("inputvalues.txt", "r");
+	/*file2=fopen("inputvalues.txt", "r");
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -140,7 +140,7 @@ int main()
 			printf("%s ", curr->attname);
 		}
 		printf("\n");
-	}
+	}*/
 
 	//positiveValues(NULL, 1, values, valuesize, nattributes, test, head);
 }
