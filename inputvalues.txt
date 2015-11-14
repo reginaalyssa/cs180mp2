@@ -1,0 +1,6 @@
+5
+Sunny Hot High Light No
+Sunny Hot High Strong No
+Overcast Hot High Light Yes
+Rain Mild High Light Yes
+Rain Cool Normal Light Yes
