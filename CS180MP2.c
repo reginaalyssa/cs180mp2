@@ -3,23 +3,35 @@
 #include<stdlib.h>
 #define LENGTH 100
 
-typedef struct att
+typedef struct attnode attnode;
+typedef struct att att;
+
+struct attnode
 {
 	char attname[LENGTH];
 	int x;
 	int y;
 	int equivalent;
 	int used;
-	struct att * next;
-} att;
+	struct attnode * next;
+};
+
+struct att
+{
+	attnode * head;
+	attnode * tail;
+};
+
 
 char * removeNewline(char * str);
-int positiveValues(int S, int attribute);
-int negativeValues(int S, int attribute);
+void init(att * foo);
+void addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent);
+void showList(att * foo);
 
 int main()
 {
 	int i, j, k, l; // Iterators
+	int valuesize;
 	char strInput[LENGTH]; // Buffer for scanning string inputs
 	int values[LENGTH][LENGTH]; // 2D Array to contain integer value equivalents
 	int nattributes; // Number of attributes
@@ -27,9 +39,8 @@ int main()
 	int nvalues; // Number of values in test data
 	FILE * file;
 	FILE * file2;
-	att * test;
-	att * head=NULL;
-	att * tail=NULL;
+	att test;
+	init(&test);
 
 	/*
 		Format of input.txt:
@@ -53,62 +64,26 @@ int main()
 	}
 
 	fscanf(file, "%d\n", &nattributes);
-	k=0;
-	j=1;
-	l=-1;
+	valuesize=1;
+	j=-1;
 	for(k=0; k<nattributes; k++)
 	{
-		test=malloc(sizeof(att));
 		fgets(strInput, LENGTH, file);
 		removeNewline(strInput);
-        strcpy(test->attname, strInput);
-		test->x=0;
-		test->y=k;
-		test->equivalent=l;
-		l--;
-
-		test->next=NULL;
-		if(head==NULL)
-		{
-			head=test;
-		}
-		else
-		{
-			tail->next=test;
-		}
-		tail=test;
+		addNode(&test, strInput, 0, k, j);
+		j--;
 
 		fscanf(file, "%d\n", &nchoices);
 		for(i=0; i<nchoices; i++)
 		{
-			test=malloc(sizeof(att));
 			fgets(strInput, LENGTH, file);
 			removeNewline(strInput);
-        	strcpy(test->attname, strInput);
-			test->x=i+1;
-			test->y=k;
-			test->equivalent=j;
-
-			test->next=NULL;
-			if(head==NULL)
-			{
-				head=test;
-			}
-			else
-			{
-				tail->next=test;
-			}
-			tail=test;
-			j++;
+			addNode(&test, strInput, i+1, k, valuesize);
+			valuesize++;
 		}
 	}
-	att * curr;
-	curr=head;
-	while(curr!=NULL)
-	{
-		printf("Attribute[%d][%d]: %s %d\n", curr->x, curr->y, curr->attname, curr->equivalent);
-		curr=curr->next;
-	}
+
+	showList(&test);
 
 	/*
 		Format of inputvalues.txt:
@@ -130,7 +105,7 @@ int main()
 	fscanf(file2, "%d\n", &nvalues);
 	for(i=0; i<nvalues; i++)
 	{
-		for(j=0; j<nattributes; j++)
+		for(valuesize=0; valuesize<nattributes; valuesize++)
 		{
 			fscanf(file2, "%s ", strInput);
 			curr=head;
@@ -142,7 +117,7 @@ int main()
 				}
 				curr=curr->next;
 			}
-			values[i][j]=curr->equivalent;
+			values[i][valuesize]=curr->equivalent;
 
 		}
 	}
@@ -151,12 +126,12 @@ int main()
 
 	for(i=0; i<nvalues; i++)
 	{
-		for(j=0; j<nattributes; j++)
+		for(valuesize=0; valuesize<nattributes; valuesize++)
 		{
 			curr=head;
 			while(curr!=NULL)
 			{
-				if(values[i][j]==curr->equivalent)
+				if(values[i][valuesize]==curr->equivalent)
 				{
 					break;
 				}
@@ -166,6 +141,8 @@ int main()
 		}
 		printf("\n");
 	}
+
+	//positiveValues(NULL, 1, values, valuesize, nattributes, test, head);
 }
 
 char * removeNewline(char * str)
@@ -183,20 +160,109 @@ char * removeNewline(char * str)
 	return str;
 }
 
-int positiveValues(int S, int attribute)
+void init(att * foo)
 {
+	foo->head=NULL;
+	foo->tail=NULL;
+}
+
+
+void addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent)
+{
+	struct attnode * node;
+	struct attnode * curr;
+
+	node=(attnode*)malloc(sizeof(attnode));
+	strcpy(node->attname, attname);
+	node->x=x;
+	node->y=y;
+	node->equivalent=equivalent;
+	node->next=NULL;
+
+	if(foo->head==NULL)
+	{
+		foo->head=node;
+		foo->tail=node;
+		foo->head->next=NULL;
+	}
+	else
+	{
+		curr=foo->head;
+		while(curr->next!=NULL)
+		{
+			curr=curr->next;
+		}
+		curr->next=node;
+		foo->tail=curr->next;
+		foo->tail->next=NULL;
+	}
+}
+
+void showList(att * foo)
+{
+	struct attnode * curr;
+	curr=foo->head;
+	if(foo->head==NULL)
+	{
+		printf("\nQueue: empty queue\n");
+	}
+	else
+	{
+		printf("\nQueue:\n");
+		while(curr!=NULL)
+		{
+			printf("%s %d %d %d\n", curr->attname, curr->x, curr->y, curr->equivalent);
+			curr=curr->next;
+		}
+	}
+}
+
+/*int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int valuesize, int nattributes, attnode * test)
+{
+	attnode * curr;
+	attnode * yes;
+	int i, j;
 	if(S!=NULL)
 	{
 		// Stuff
 	}
 	else
 	{
+		curr=test->head;
+		while(curr!=NULL)
+		{
+			if(curr->equivalent==attribute)
+			{
+				break;
+			}
+			curr=curr->next;
+		}
 
+		yes=test->head;
+		while(yes!=NULL)
+		{
+			if(yes->attname=="Yes")
+			{
+				break;
+			}
+			yes=yes->next;
+		}
+
+		for(i=0; i<valuesize; i++)
+		{
+			for(j=0; j<nattributes; j++)
+			{
+				if(values[i][j]==attribute && values[i][nattributes-1]==yes->equivalent)
+				{
+					printf("Uy may isang yes.\n");
+				}
+			}
+		}
 	}
 
 }
 
-int negativeValues(int S, int attribute)
+int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int valuesize, int nattributes)
 {
 	if(S!=NULL)
 	{
@@ -206,4 +272,4 @@ int negativeValues(int S, int attribute)
 	{
 
 	}
-}
+}*/
