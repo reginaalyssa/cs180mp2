@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<math.h>
 #define LENGTH 100
 
 typedef struct attnode attnode;
@@ -29,6 +30,8 @@ void addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent);
 void showList(att * foo);
 int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
+float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
+float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 
 int main()
 {
@@ -146,8 +149,7 @@ int main()
 		printf("\n");
 	}
 
-	positiveValues(1, 5, values, nvalues, nattributes, &test);
-	negativeValues(1, 5, values, nvalues, nattributes, &test);
+	getGain(0, -1, values, nvalues, nattributes, &test);
 }
 
 char * removeNewline(char * str)
@@ -386,4 +388,82 @@ int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 	}
 	printf("Negative: %d\n", negativectr);
 	return negativectr;
+}
+
+float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
+{// S=0: apply to all tuples
+	float entropy;
+	int positive=positiveValues(S, attribute, values, nvalues, nattributes, test);
+	int negative=negativeValues(S, attribute, values, nvalues, nattributes, test);
+	float pos;
+	float neg;
+	float logpos;
+	float logneg;
+	int total;
+
+	total=positive+negative;
+	pos=(float)positive/total;
+	neg=(float)negative/total;
+	logpos=log2(pos);
+	logneg=log2(neg);
+	if(positive==0||negative==0)
+	{
+		entropy=0;
+	}
+	else if(positive==negative)
+	{
+		entropy=1;
+	}
+	else
+	{
+		entropy=(-pos*logpos)-(neg*logneg);
+	}
+	printf("%d %lf %lf\n", total, pos, neg);
+
+	printf("\nanswer: %lf\n", entropy);
+	return entropy;
+}
+
+float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
+{
+	struct attnode * curr;
+	struct attnode * curr2;
+	float entropy;
+	float entropy2;
+	float sum=0;
+	int denominator=positiveValues(S, S, values, nvalues, nattributes, test)+negativeValues(S, S, values, nvalues, nattributes, test);
+	int numerator;
+	float gain;
+	entropy=getEntropy(S, S, values, nvalues, nattributes, test);
+	printf("ooh yas %lf\n", entropy);
+
+	curr=test->head;
+	while(curr!=NULL)
+	{
+		if(curr->equivalent==attribute)
+		{
+			printf("Found curr: %s %d %d %d\n", curr->attname, curr->x, curr->y, curr->equivalent);
+			break;
+		}
+		curr=curr->next;
+	}
+
+	curr2=curr->next;
+	while(curr2!=NULL)
+	{
+		if(curr2->y==curr->y)
+		{
+			printf("Found curr2: %s %d %d %d\n", curr2->attname, curr2->x, curr2->y, curr2->equivalent);
+			entropy2=getEntropy(S, curr2->equivalent, values, nvalues, nattributes, test);
+			printf("Entropy: %lf\n", entropy2);
+			numerator=positiveValues(S, curr2->equivalent, values, nvalues, nattributes, test)+negativeValues(S, curr2->equivalent, values, nvalues, nattributes, test);
+			printf("Numerator: %d\n", numerator);
+			printf("Denominator: %d\n", denominator);
+			sum+=(float)numerator/denominator*entropy2;
+			printf("Sum ryt nao: %lf\n", sum);
+		}
+		curr2=curr2->next;
+	}
+	gain=entropy-sum;
+	printf("Gain: %lf\n", gain);
 }
