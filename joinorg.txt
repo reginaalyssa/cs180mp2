@@ -1,0 +1,42 @@
+Gender
+2
+Male
+Female
+Year Level
+5
+1st
+2nd
+3rd
+4th
+Others
+Free Time
+4
+0-1
+1-2
+2-4
+5+
+Social Skilla
+3
+Introvert
+Ambivert
+Extrovert
+Units
+4
+Underload
+15-17
+18-21
+Overload
+Number of Orgs
+8
+0
+1
+2
+3
+4
+5
+6
+7
+Join
+2
+Yes
+No

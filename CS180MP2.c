@@ -134,16 +134,6 @@ int main()
 	{
 		for(j=0; j<nattributes; j++)
 		{
-			/*curr=test.head;
-			while(curr!=NULL)
-			{
-				if(values[i][j]==curr->equivalent)
-				{
-					break;
-				}
-				curr=curr->next;
-			}
-			printf("%s ", curr->attname);*/
 			printf("%d ", values[i][j]);
 		}
 		printf("\n");
