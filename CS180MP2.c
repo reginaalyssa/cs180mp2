@@ -6,6 +6,7 @@
 
 typedef struct attnode attnode;
 typedef struct att att;
+typedef struct tree tree;
 
 struct attnode
 {
@@ -15,6 +16,8 @@ struct attnode
 	int equivalent;
 	int used;
 	struct attnode * next;
+	struct attnode * LSON;
+	struct attnode * RSON;	
 };
 
 struct att
@@ -23,15 +26,25 @@ struct att
 	attnode * tail;
 };
 
+struct tree
+{
+	attnode * top;
+};
+
 
 char * removeNewline(char * str);
 void init(att * foo);
+void initTree(tree * foo);
 void addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent);
 void showList(att * foo);
 int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
+int getMaxGain(int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
+int isUsed(int attribute, att * test);
+void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test, tree * decisionTree);
+
 
 int main()
 {
@@ -45,7 +58,9 @@ int main()
 	FILE * file;
 	FILE * file2;
 	att test;
+	tree decisionTree;
 	init(&test);
+	initTree(&decisionTree);
 
 	/*
 		Format of input.txt:
@@ -61,7 +76,7 @@ int main()
 			Cool 				// 3rd value of 2nd attribute
 	*/
 
-	file=fopen("joinorg.txt", "r");
+	file=fopen("input.txt", "r");
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -100,7 +115,7 @@ int main()
 		Rain Cool Normal Light Yes 		// 5th input value
 	*/
 
-	file2=fopen("inputsurvey.txt", "r");
+	file2=fopen("inputvalues.txt", "r");
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -141,7 +156,12 @@ int main()
 		printf("\n");
 	}*/
 
-	getGain(0, -1, values, nvalues, nattributes, &test);
+	//getGain(0, -1, values, nvalues, nattributes, &test);
+	i=getMaxGain(0, values, nvalues, nattributes, &test);
+	printf("Node with maximum gain is %d\n", i);
+
+
+	addSubtree(0, values, nvalues, nattributes, &test, &decisionTree);
 }
 
 char * removeNewline(char * str)
@@ -165,6 +185,10 @@ void init(att * foo)
 	foo->tail=NULL;
 }
 
+void initTree(tree * foo)
+{
+	foo->top=NULL;
+}
 
 void addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent)
 {
@@ -176,6 +200,7 @@ void addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent)
 	node->x=x;
 	node->y=y;
 	node->equivalent=equivalent;
+	node->used=0;
 	node->next=NULL;
 
 	if(foo->head==NULL)
@@ -217,7 +242,6 @@ int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 	struct attnode * yes;
 	int i, j, k;
 	int positivectr=0;
-	// With all S palang 'to
 	if(S==0)
 	{
 		yes=test->head;
@@ -287,7 +311,7 @@ int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 			}
 		}
 	}
-	printf("Positive: %d\n", positivectr);
+	//printf("Positive: %d\n", positivectr);
 	return positivectr;
 
 }
@@ -300,16 +324,6 @@ int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 	int negativectr=0;
 	if(S==0)
 	{
-		/*curr=test->head;
-		while(curr!=NULL)
-		{
-			if(curr->equivalent==attribute)
-			{
-				break;
-			}
-			curr=curr->next;
-		} Use this if may value na attribute and S na hindi 0*/
-
 		no=test->head;
 		while(no!=NULL)
 		{
@@ -372,18 +386,17 @@ int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 					if(values[i][k]==S && values[i][j]==attribute && values[i][nattributes-1]==no->equivalent)
 					{
 						negativectr++;
-					}
-					//printf("[%d][%d]%d==%d && [%d][%d]%d==%d && [%d][%d]%d==%d\n", i, k, values[i][k], S, i, j, values[i][j], attribute, i, nattributes-1, values[i][nattributes-1], no->equivalent);
+					}	
 				}
 			}
 		}
 	}
-	printf("Negative: %d\n", negativectr);
+	//printf("Negative: %d\n", negativectr);
 	return negativectr;
 }
 
 float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
-{// S=0: apply to all tuples
+{
 	float entropy;
 	int positive=positiveValues(S, attribute, values, nvalues, nattributes, test);
 	int negative=negativeValues(S, attribute, values, nvalues, nattributes, test);
@@ -410,9 +423,9 @@ float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, 
 	{
 		entropy=(-pos*logpos)-(neg*logneg);
 	}
-	printf("%d %lf %lf\n", total, pos, neg);
+	//printf("%d %lf %lf\n", total, pos, neg);
 
-	printf("\nanswer: %lf\n", entropy);
+	//printf("\nanswer: %lf\n", entropy);
 	return entropy;
 }
 
@@ -427,14 +440,14 @@ float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int
 	int numerator;
 	float gain;
 	entropy=getEntropy(S, S, values, nvalues, nattributes, test);
-	printf("ooh yas %lf\n", entropy);
+	//printf("ooh yas %lf\n", entropy);
 
 	curr=test->head;
 	while(curr!=NULL)
 	{
 		if(curr->equivalent==attribute)
 		{
-			printf("Found curr: %s %d %d %d\n", curr->attname, curr->x, curr->y, curr->equivalent);
+			//printf("Found curr: %s %d %d %d\n", curr->attname, curr->x, curr->y, curr->equivalent);
 			break;
 		}
 		curr=curr->next;
@@ -445,17 +458,89 @@ float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int
 	{
 		if(curr2->y==curr->y)
 		{
-			printf("Found curr2: %s %d %d %d\n", curr2->attname, curr2->x, curr2->y, curr2->equivalent);
+			//printf("Found curr2: %s %d %d %d\n", curr2->attname, curr2->x, curr2->y, curr2->equivalent);
 			entropy2=getEntropy(S, curr2->equivalent, values, nvalues, nattributes, test);
-			printf("Entropy: %lf\n", entropy2);
+			//printf("Entropy: %lf\n", entropy2);
 			numerator=positiveValues(S, curr2->equivalent, values, nvalues, nattributes, test)+negativeValues(S, curr2->equivalent, values, nvalues, nattributes, test);
-			printf("Numerator: %d\n", numerator);
-			printf("Denominator: %d\n", denominator);
+			//printf("Numerator: %d\n", numerator);
+			//printf("Denominator: %d\n", denominator);
 			sum+=(float)numerator/denominator*entropy2;
-			printf("Sum ryt nao: %lf\n", sum);
+			//printf("Sum ryt nao: %lf\n", sum);
 		}
 		curr2=curr2->next;
 	}
 	gain=entropy-sum;
 	printf("Gain: %lf\n", gain);
+	return gain;
+}
+
+int getMaxGain(int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
+{
+	float max=0;
+	int maxAtt;
+	int i;
+	float gain;
+
+	for(i=-1; i>-nattributes; i--)
+	{
+		if(isUsed(i, test)==0)
+		{
+			gain=getGain(S, i, values, nvalues, nattributes, test);
+			printf("Gain of %d and %d is %lf\n", S, i, gain);
+			if(gain>max)
+			{
+				max=gain;
+				maxAtt=i;
+			}
+		}
+	}
+	return maxAtt;
+}
+
+int isUsed(int attribute, att * test)
+{
+	attnode * curr;
+	curr=test->head;
+	while(curr!=NULL)
+	{
+		if(curr->equivalent==attribute && curr->used==1)
+		{
+			printf("Node is used\n");
+			return 1;
+		}
+		curr=curr->next;
+	}
+	printf("Node hasnt been used yet\n");
+	return 0;
+}
+
+void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test, tree * decisionTree)
+{
+	attnode * curr;
+	int toAdd;
+
+	// check if tree is null
+
+	if (decisionTree->top==NULL)
+	{
+		// getMaxGain
+		toAdd = getMaxGain(0, values, nvalues, nattributes, test);
+
+		curr=test->head;
+		while (curr!=NULL){
+			if (curr->equivalent == toAdd){
+				curr->used=1;
+				decisionTree->top=curr;
+				decisionTree->top->LSON=NULL;
+				decisionTree->top->RSON=NULL;
+				decisionTree->top->next=NULL;
+
+				break;
+			}
+			curr=curr->next;
+		}
+		printf("\nTop nung dec tree: %s\n", decisionTree->top->attname);
+		//addSubtree(decisionTree, test, decisionTree->top->equivalent, nattributes);
+	}
+
 }
