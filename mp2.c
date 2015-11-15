@@ -630,7 +630,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 			curr=test->head;
 			while (curr!=NULL){
 				if (curr->equivalent == attribute){
-					curr->used=1;
+					//curr->used=1;
 					from=curr;
 					break;
 				}
@@ -640,8 +640,54 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 			printf(" as LSON ni %s", from->attname);
 
 			from->LSON=decurr;
+			curr=decurr;
 
 			//printf("\n%s(top)-LSON->%s-LSON->%s\n", decisionTree->top->attname, decisionTree->top->LSON->attname, decisionTree->top->LSON->LSON->attname);
+
+			// Append values of winning attribute
+			curr2=curr->next;
+			//printf("decurr: %s\n", decurr->attname);
+			//printf("curr: %s\n", curr->attname);
+			while(curr2!=NULL)
+			{
+				//printf("curr2: %s\n", curr2->attname);
+				if(curr2->y==curr->y)
+				{
+					//printf("curr2 is a value\n");
+					i++;
+					if (i==1)
+					{
+						//printf("i=1 (first value)\n");
+						decurr->LSON=curr2;
+						decurr->RSON=NULL;
+						printf("\n%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
+						decurr=decurr->LSON;
+						first=decurr;
+					}
+					else
+					{
+						//printf("i>1 (next value)\n");
+						decurr->LSON=NULL;
+						decurr->RSON=curr2;
+						printf("\n%s -RSON-> %s", decurr->attname, decurr->RSON->attname);
+						decurr=decurr->RSON;
+					}
+				}
+				curr2=curr2->next;
+			}
+
+			decurr=first;
+			
+			printf("\nfirst: %s\n", first->attname);
+			/*
+			while(decurr!=NULL)
+			{
+				//printf("\ndecurr: %s\n", decurr->attname);
+				addSubtree(decurr->equivalent, values, nvalues, nattributes, test, decisionTree);
+				decurr=decurr->RSON;
+			}
+			*/
+
 		}
 	}
 }
