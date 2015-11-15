@@ -61,7 +61,7 @@ int main()
 			Cool 				// 3rd value of 2nd attribute
 	*/
 
-	file=fopen("input.txt", "r");
+	file=fopen("joinorg.txt", "r");
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -100,7 +100,7 @@ int main()
 		Rain Cool Normal Light Yes 		// 5th input value
 	*/
 
-	file2=fopen("inputvalues.txt", "r");
+	file2=fopen("inputsurvey.txt", "r");
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -119,25 +119,27 @@ int main()
 			{
 				if(strcmp(strInput, curr->attname)==0)
 				{
+					//printf("%s ", curr->attname);
+					values[i][j]=curr->equivalent;
 					break;
 				}
 				curr=curr->next;
 			}
-			values[i][j]=curr->equivalent;
 
 		}
+		//printf("\n");
 	}
 
 	printf("\n");	
 
-	for(i=0; i<nvalues; i++)
+	/*for(i=0; i<nvalues; i++)
 	{
 		for(j=0; j<nattributes; j++)
 		{
 			printf("%d ", values[i][j]);
 		}
 		printf("\n");
-	}
+	}*/
 
 	getGain(0, -1, values, nvalues, nattributes, &test);
 }

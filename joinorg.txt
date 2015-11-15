@@ -1,3 +1,4 @@
+7
 Gender
 2
 Male
@@ -15,7 +16,7 @@ Free Time
 1-2
 2-4
 5+
-Social Skilla
+Social Skills
 3
 Introvert
 Ambivert
