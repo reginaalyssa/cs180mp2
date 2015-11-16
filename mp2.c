@@ -16,8 +16,9 @@ struct attnode
 	int equivalent;
 	int used;
 	struct attnode * next;
+	struct attnode * globnext;
 	struct attnode * LSON;
-	struct attnode * RSON;  
+	struct attnode * RSON; 
 };
 
 struct att
@@ -62,6 +63,7 @@ int main()
 	init(&test);
 	initTree(&decisionTree);
 	init(&glob);
+	attnode * node;
 
 	/*
 		Format of input.txt:
@@ -161,8 +163,13 @@ int main()
 	//i=getMaxGain(0, values, nvalues, nattributes, &test);
 	//printf("Node with maximum gain is %d\n", i);
 
-
 	addSubtree(0, values, nvalues, nattributes, &test, &decisionTree);
+	node=glob.head;
+	while(node!=NULL){
+		addSubtree(node->equivalent, values, nvalues, nattributes, &test, &decisionTree);
+		//printf("\n%s", node->attname);
+		node=node->globnext;
+	}
 }
 
 char * removeNewline(char * str)
@@ -531,6 +538,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 	attnode * curr2;
 	attnode * decurr;
 	attnode * from;
+	attnode * globcurr;
 	int toAdd;
 	int i=0;
 	int numRSON;
@@ -576,7 +584,18 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					decurr->RSON=NULL;
 					printf("%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
 					decurr=decurr->LSON;
-					
+					if (glob.head==NULL){
+						printf("Null glob");
+						glob.head=decurr;
+					}
+					else{
+						globcurr=glob.head;
+						while(globcurr->globnext!=NULL){
+							globcurr=globcurr->globnext;
+						}
+						//decurr->globnext=NULL;
+						globcurr->globnext=decurr;
+					}
 				}
 				else
 				{
@@ -585,17 +604,29 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					decurr->RSON=curr2;
 					printf("%s -RSON-> %s", decurr->attname, decurr->RSON->attname);
 					decurr=decurr->RSON;
+					if (glob.head==NULL){
+						glob.head=decurr;
+					}
+					else{
+						globcurr=glob.head;
+						while(globcurr->globnext!=NULL){
+							globcurr=globcurr->globnext;
+						}
+						//decurr->globnext=NULL;
+						globcurr->globnext=decurr;
+					}
 				}
 			}
 			curr2=curr2->next;
 		}
-
+		/*
 		while(decurr!=NULL)
 		{
 			//printf("\ndecurr: %s\n", decurr->attname);
 			addSubtree(decurr->equivalent, values, nvalues, nattributes, test, decisionTree);
 			decurr=decurr->RSON;
 		}
+		*/
 
 		/*
 		// PRINT SOME PARTS OF THE TREE
@@ -670,6 +701,17 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 						decurr->RSON=NULL;
 						printf("\n%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
 						decurr=decurr->LSON;
+						if (glob.head==NULL){
+						glob.head=decurr;
+						}
+						else{
+							globcurr=glob.head;
+							while(globcurr->globnext!=NULL){
+								globcurr=globcurr->globnext;
+							}
+							//decurr->globnext=NULL;
+							globcurr->globnext=decurr;
+						}
 					}
 					else
 					{
@@ -678,6 +720,17 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 						decurr->RSON=curr2;
 						printf("\n%s -RSON-> %s", decurr->attname, decurr->RSON->attname);
 						decurr=decurr->RSON;
+						if (glob.head==NULL){
+						glob.head=decurr;
+						}
+						else{
+							globcurr=glob.head;
+							while(globcurr->globnext!=NULL){
+								globcurr=globcurr->globnext;
+							}
+							//decurr->globnext=NULL;
+							globcurr->globnext=decurr;
+						}
 					}
 				}
 				curr2=curr2->next;
