@@ -827,31 +827,46 @@ int getParents(int attribute, att * test)
 	attnode * curr;
 	attnode * curr2;
 	int parents[LENGTH];
-	int i=0;
+	int parentsctr=0;
 
 	curr=test->head;
 	while(curr!=NULL)
 	{
 		if(curr->equivalent==attribute)
 		{
+			printf("%s's parent is %s\n", curr->attname, curr->parent->attname);
+			if(curr->parent!=NULL)
+			{
+				parents[parentsctr]=curr->parent->equivalent;
+				printf("%d appended to parents with counter %d\n", curr->parent->equivalent, parentsctr);
+				parentsctr++;				
+			}
+			//Append sa list
 			break;
 		}
 		curr=curr->next;
 	}
 
-	printf("%s's parent is %s\n", curr->attname, curr->parent->attname);
-	/*while(curr2!=NULL)
+
+	curr=curr->parent;
+	while(curr!=NULL)
 	{
-		curr=test->head;
-		while(curr!=NULL)
+		printf("%s's parent is %s\n", curr->attname, curr->parent->attname);
+		if(curr->parent!=NULL)
 		{
-			if(curr->equivalent==attribute)
-			{
-				break;
-			}
-			curr=curr->next;
+			parents[parentsctr]=curr->parent->equivalent;
+			printf("%d appended to parents with counter %d\n", curr->parent->equivalent, parentsctr);
+			parentsctr++;				
 		}
 		curr=curr->parent;
-		parents[i]=curr->equivalent;
-	}*/
+		//Append sa list
+	}
+	printf("\nArray consists of ");
+
+	int i;
+	for(i=0; i<parentsctr; i++)
+	{
+		printf("%d, ", parents[i]);
+	}
+	printf("\n");
 }
