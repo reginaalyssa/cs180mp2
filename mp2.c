@@ -585,7 +585,8 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					printf("%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
 					decurr=decurr->LSON;
 					if (glob.head==NULL){
-						printf("Null glob");
+						//printf("Null glob");
+						decurr->globnext=NULL;
 						glob.head=decurr;
 					}
 					else{
@@ -593,7 +594,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 						while(globcurr->globnext!=NULL){
 							globcurr=globcurr->globnext;
 						}
-						//decurr->globnext=NULL;
+						decurr->globnext=NULL;
 						globcurr->globnext=decurr;
 					}
 				}
@@ -605,6 +606,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					printf("%s -RSON-> %s", decurr->attname, decurr->RSON->attname);
 					decurr=decurr->RSON;
 					if (glob.head==NULL){
+						decurr->globnext=NULL;
 						glob.head=decurr;
 					}
 					else{
@@ -612,7 +614,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 						while(globcurr->globnext!=NULL){
 							globcurr=globcurr->globnext;
 						}
-						//decurr->globnext=NULL;
+						decurr->globnext=NULL;
 						globcurr->globnext=decurr;
 					}
 				}
@@ -702,14 +704,15 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 						printf("\n%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
 						decurr=decurr->LSON;
 						if (glob.head==NULL){
-						glob.head=decurr;
+							decurr->globnext=NULL;
+							glob.head=decurr;
 						}
 						else{
 							globcurr=glob.head;
 							while(globcurr->globnext!=NULL){
 								globcurr=globcurr->globnext;
 							}
-							//decurr->globnext=NULL;
+							decurr->globnext=NULL;
 							globcurr->globnext=decurr;
 						}
 					}
@@ -728,7 +731,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 							while(globcurr->globnext!=NULL){
 								globcurr=globcurr->globnext;
 							}
-							//decurr->globnext=NULL;
+							decurr->globnext=NULL;
 							globcurr->globnext=decurr;
 						}
 					}
