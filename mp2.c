@@ -47,7 +47,7 @@ float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int
 int getMaxGain(int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 int isUsed(int attribute, att * test);
 void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test, tree * decisionTree);
-int updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
+void updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 
 att glob;
 
@@ -177,11 +177,10 @@ int main()
 		//printf("%s\tparent: %s\n", node->attname, node->parent->attname);
 		node=node->globnext;
 	}
+
 	node=glob.head;
 	while(node!=NULL){
-		//addSubtree(node->equivalent, values, nvalues, nattributes, &test, &decisionTree);
-		//printf("\n%s", node->attname);
-		//printf("%s\tparent: %s\n", node->attname, node->parent->attname);
+		printf("\n%s pos: %d, neg: %d\n", node->attname, node->positivetracker, node->negativetracker);
 		node=node->globnext;
 	}
 
@@ -190,6 +189,7 @@ int main()
 	int nega=negativeValues(1, 7, values, nvalues, nattributes, &test);
 	printf("Negative of high wrt sunny: %d\n", nega);*/
 
+	/*
 	updatePosNeg(1, values, nvalues, nattributes, &test);
 	updatePosNeg(2, values, nvalues, nattributes, &test);
 	updatePosNeg(3, values, nvalues, nattributes, &test);
@@ -200,6 +200,7 @@ int main()
 	updatePosNeg(8, values, nvalues, nattributes, &test);
 	updatePosNeg(9, values, nvalues, nattributes, &test);
 	updatePosNeg(10, values, nvalues, nattributes, &test);
+	*/
 }
 
 char * removeNewline(char * str)
@@ -607,6 +608,8 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 			curr=curr->next;
 		}
 		decurr=decisionTree->top;
+		updatePosNeg(decurr->equivalent, values, nvalues, nattributes, test);
+
 		printf("\nTop nung dec tree: %s\n", decurr->attname);
 		//addSubtree(decisionTree, test, decisionTree->top->equivalent, nattributes);
 
@@ -628,6 +631,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					printf("i=1 (first value)\n");
 					decurr->LSON=curr2;
 					curr2->parent=decurr;
+					updatePosNeg(curr2->equivalent, values, nvalues, nattributes, test);
 					decurr->RSON=NULL;
 					printf("%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
 					decurr=decurr->LSON;
@@ -653,6 +657,10 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					printf("\ni>1 (next value)\n");
 					decurr->LSON=NULL;
 					decurr->RSON=curr2;
+
+					curr2->parent=first;
+
+					updatePosNeg(curr2->equivalent, values, nvalues, nattributes, test);
 					printf("%s -RSON-> %s", decurr->attname, decurr->RSON->attname);
 					decurr=decurr->RSON;
 					if (glob.head==NULL){
@@ -738,6 +746,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 			from->LSON=decurr;
 			decurr->parent=from;
+			updatePosNeg(decurr->equivalent, values, nvalues, nattributes, test);
 			curr=decurr;
 
 			first=decurr;
@@ -759,6 +768,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					{
 						decurr->LSON=curr2;
 						curr2->parent=decurr;
+						updatePosNeg(curr2->equivalent, values, nvalues, nattributes, test);
 						decurr->RSON=NULL;
 						printf("\n%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
 						decurr=decurr->LSON;
@@ -783,8 +793,12 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 						//printf("i>1 (next value)\n");
 						decurr->LSON=NULL;
 						decurr->RSON=curr2;
+
+						curr2->parent=first;
+
 						printf("\n%s -RSON-> %s", decurr->attname, decurr->RSON->attname);
 						decurr=decurr->RSON;
+						updatePosNeg(decurr->equivalent, values, nvalues, nattributes, test);
 						if (glob.head==NULL){
 						glob.head=decurr;
 						printf("\nAdded %s to glob\n", decurr->attname);
@@ -817,7 +831,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 	}
 }
 
-int updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
+void updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
 {
 	attnode * curr;
 	attnode * curr2;
@@ -925,8 +939,15 @@ int updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int nat
 		}
 	}
 	printf("Positive Rows: %d\nNegative Rows: %d\n\n", positivectr, negativectr);
-	realnode->positivetracker=positivectr;
-	realnode->negativetracker=negativectr;
-
+	if(realnode->equivalent<0)
+	{
+		realnode->positivetracker=-1;
+		realnode->negativetracker=-1;
+	}
+	else
+	{
+		realnode->positivetracker=positivectr;
+		realnode->negativetracker=negativectr;
+	}
 	// Pagkaexit, before icheck yung gain check if + or - tracker ==0 if yes, wag na idagdag yung node
 }
