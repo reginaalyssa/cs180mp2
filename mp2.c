@@ -31,7 +31,6 @@ struct tree
 	attnode * top;
 };
 
-
 char * removeNewline(char * str);
 void init(att * foo);
 void initTree(tree * foo);
@@ -45,6 +44,7 @@ int getMaxGain(int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, 
 int isUsed(int attribute, att * test);
 void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test, tree * decisionTree);
 
+att glob;
 
 int main()
 {
@@ -61,6 +61,7 @@ int main()
 	tree decisionTree;
 	init(&test);
 	initTree(&decisionTree);
+	init(&glob);
 
 	/*
 		Format of input.txt:
@@ -529,7 +530,6 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 	attnode * curr;
 	attnode * curr2;
 	attnode * decurr;
-	attnode * first;
 	attnode * from;
 	int toAdd;
 	int i=0;
@@ -576,7 +576,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					decurr->RSON=NULL;
 					printf("%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
 					decurr=decurr->LSON;
-					first=decurr;
+					
 				}
 				else
 				{
@@ -590,15 +590,23 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 			curr2=curr2->next;
 		}
 
-		decurr=first;
-		
-		printf("\nfirst: %s\n", first->attname);
 		while(decurr!=NULL)
 		{
 			//printf("\ndecurr: %s\n", decurr->attname);
 			addSubtree(decurr->equivalent, values, nvalues, nattributes, test, decisionTree);
 			decurr=decurr->RSON;
 		}
+
+		/*
+		// PRINT SOME PARTS OF THE TREE
+		printf("%s-LSON->%s\n", decisionTree->top->attname, decisionTree->top->LSON->attname);
+		printf("%s-RSON->%s\n", decisionTree->top->attname, decisionTree->top->RSON->attname);
+		printf("%s(lson ng tree)-LSON->%s\n", decisionTree->top->LSON->attname, decisionTree->top->LSON->LSON->attname);
+		printf("%s(lson ng tree)-RSON->%s\n", decisionTree->top->LSON->attname, decisionTree->top->LSON->RSON->attname);
+		printf("%s(top->LSON->RSON->RSON)-LSON->%s\n", decisionTree->top->LSON->RSON->RSON->attname, decisionTree->top->LSON->RSON->RSON->LSON->attname);
+		printf("%s-LSON->%s\n", decisionTree->top->LSON->RSON->RSON->LSON->attname, decisionTree->top->LSON->RSON->RSON->LSON->LSON->attname);
+		printf("%s-RSON->%s\n", decisionTree->top->LSON->RSON->RSON->LSON->LSON->attname, decisionTree->top->LSON->RSON->RSON->LSON->LSON->RSON->attname);
+		*/
 	}
 
 	else
@@ -607,6 +615,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 		toAdd = getMaxGain(attribute, values, nvalues, nattributes, test);
 		if (toAdd==100||toAdd==101){
 			printf("\n>>Append yes/no na node (backlog muna)\n");
+			//decurr = addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent);
 		}
 		//printf("%d\n", toAdd);
 		else{
@@ -657,12 +666,10 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					i++;
 					if (i==1)
 					{
-						//printf("i=1 (first value)\n");
 						decurr->LSON=curr2;
 						decurr->RSON=NULL;
 						printf("\n%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
 						decurr=decurr->LSON;
-						first=decurr;
 					}
 					else
 					{
@@ -675,10 +682,6 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 				}
 				curr2=curr2->next;
 			}
-
-			decurr=first;
-			
-			printf("\nfirst: %s\n", first->attname);
 			/*
 			while(decurr!=NULL)
 			{
@@ -687,6 +690,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 				decurr=decurr->RSON;
 			}
 			*/
+			
 
 		}
 	}
