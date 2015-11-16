@@ -583,6 +583,8 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 	attnode * from;
 	attnode * globcurr;
 	attnode * first;
+	attnode * yes;
+	attnode * no;
 	int toAdd;
 	int i=0;
 	int numRSON;
@@ -706,127 +708,170 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 	else
 	{
 		printf("\nAttribute: %d\n", attribute);
-		toAdd = getMaxGain(attribute, values, nvalues, nattributes, test);
-		if (toAdd==100||toAdd==101){
-			printf("\n>>Append %d yes/no na node (backlog muna)\n", attribute);
-			//decurr = addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent);
+
+		decurr=decisionTree->top;
+		curr=test->head;
+		while (curr!=NULL){
+			if (curr->equivalent == attribute){
+				break;
+			}
+			curr=curr->next;
 		}
-		//printf("%d\n", toAdd);
-		else{
-			// find decurr
-			decurr=decisionTree->top;
-			curr=test->head;
-			while (curr!=NULL){
-				if (curr->equivalent == toAdd){
-					curr->used=1;
-					decurr=curr;
-					decurr->LSON=NULL;
-					decurr->RSON=NULL;
-					break;
-				}
-				curr=curr->next;
-			}
 
-			printf("\n>>Ia-add ang %s", decurr->attname);
-			
-			// find attribute node
-			curr=test->head;
-			while (curr!=NULL){
-				if (curr->equivalent == attribute){
-					//curr->used=1;
-					from=curr;
-					break;
-				}
-				curr=curr->next;
-			}
-
-			//first=from;
-
-			printf(" as LSON ni %s", from->attname);
-
-			from->LSON=decurr;
-			decurr->parent=from;
-			updatePosNeg(decurr->equivalent, values, nvalues, nattributes, test);
-			curr=decurr;
-
-			first=decurr;
-
-			//printf("\n%s(top)-LSON->%s-LSON->%s\n", decisionTree->top->attname, decisionTree->top->LSON->attname, decisionTree->top->LSON->LSON->attname);
-
-			// Append values of winning attribute
-			curr2=curr->next;
-			//printf("decurr: %s\n", decurr->attname);
-			//printf("curr: %s\n", curr->attname);
-			while(curr2!=NULL)
+		if (curr->positivetracker == 0){
+			printf("APPEND NO\n");
+			no=test->head;
+			while(no!=NULL)
 			{
-				//printf("curr2: %s\n", curr2->attname);
-				if(curr2->y==curr->y)
+				if(strcmp(no->attname, "No")==0)
 				{
-					//printf("curr2 is a value\n");
-					i++;
-					if (i==1)
-					{
-						decurr->LSON=curr2;
-						curr2->parent=decurr;
-						updatePosNeg(curr2->equivalent, values, nvalues, nattributes, test);
+					break;
+				}
+				no=no->next;
+			}
+			curr->LSON=no;
+			no->parent=curr;
+
+		}
+		else if (curr->negativetracker == 0){
+			printf("APPEND YES\n");
+			yes=test->head;
+			while(yes!=NULL)
+			{
+				if(strcmp(yes->attname, "Yes")==0)
+				{
+					break;
+				}
+				yes=yes->next;
+			}
+			curr->LSON=yes;
+			yes->parent=curr;
+		}
+
+		else{
+			//if (toAdd==100||toAdd==101){
+				//printf("\n>>Append %d yes/no na node (backlog muna)\n", attribute);
+				//decurr = addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent);
+			//}
+			//printf("%d\n", toAdd);
+			//else{
+				// find decurr
+			toAdd = getMaxGain(attribute, values, nvalues, nattributes, test);
+
+				decurr=decisionTree->top;
+				curr=test->head;
+				while (curr!=NULL){
+					if (curr->equivalent == toAdd){
+						curr->used=1;
+						decurr=curr;
+						decurr->LSON=NULL;
 						decurr->RSON=NULL;
-						printf("\n%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
-						decurr=decurr->LSON;
-						if (glob.head==NULL){
-							decurr->globnext=NULL;
+						break;
+					}
+					curr=curr->next;
+				}
+
+				printf("\n>>Ia-add ang %s", decurr->attname);
+				
+				// find attribute node
+				curr=test->head;
+				while (curr!=NULL){
+					if (curr->equivalent == attribute){
+						//curr->used=1;
+						from=curr;
+						break;
+					}
+					curr=curr->next;
+				}
+
+				//first=from;
+
+				printf(" as LSON ni %s", from->attname);
+
+				from->LSON=decurr;
+				decurr->parent=from;
+				updatePosNeg(decurr->equivalent, values, nvalues, nattributes, test);
+				curr=decurr;
+
+				first=decurr;
+
+				//printf("\n%s(top)-LSON->%s-LSON->%s\n", decisionTree->top->attname, decisionTree->top->LSON->attname, decisionTree->top->LSON->LSON->attname);
+
+				// Append values of winning attribute
+				curr2=curr->next;
+				//printf("decurr: %s\n", decurr->attname);
+				//printf("curr: %s\n", curr->attname);
+				while(curr2!=NULL)
+				{
+					//printf("curr2: %s\n", curr2->attname);
+					if(curr2->y==curr->y)
+					{
+						//printf("curr2 is a value\n");
+						i++;
+						if (i==1)
+						{
+							decurr->LSON=curr2;
+							curr2->parent=decurr;
+							updatePosNeg(curr2->equivalent, values, nvalues, nattributes, test);
+							decurr->RSON=NULL;
+							printf("\n%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
+							decurr=decurr->LSON;
+							if (glob.head==NULL){
+								decurr->globnext=NULL;
+								glob.head=decurr;
+								printf("\nAdded %s to glob\n", decurr->attname);
+							}
+							else{
+								globcurr=glob.head;
+								while(globcurr->globnext!=NULL){
+									globcurr=globcurr->globnext;
+								}
+								decurr->parent=first;
+								decurr->globnext=NULL;
+								globcurr->globnext=decurr;
+								printf("\nAdded %s to glob\n", decurr->attname);
+							}
+						}
+						else
+						{
+							//printf("i>1 (next value)\n");
+							decurr->LSON=NULL;
+							decurr->RSON=curr2;
+
+							curr2->parent=first;
+
+							printf("\n%s -RSON-> %s", decurr->attname, decurr->RSON->attname);
+							decurr=decurr->RSON;
+							updatePosNeg(decurr->equivalent, values, nvalues, nattributes, test);
+							if (glob.head==NULL){
 							glob.head=decurr;
 							printf("\nAdded %s to glob\n", decurr->attname);
-						}
-						else{
-							globcurr=glob.head;
-							while(globcurr->globnext!=NULL){
-								globcurr=globcurr->globnext;
 							}
-							decurr->parent=first;
-							decurr->globnext=NULL;
-							globcurr->globnext=decurr;
-							printf("\nAdded %s to glob\n", decurr->attname);
+							else{
+								globcurr=glob.head;
+								while(globcurr->globnext!=NULL){
+									globcurr=globcurr->globnext;
+								}
+								decurr->parent=first;
+								decurr->globnext=NULL;
+								globcurr->globnext=decurr;
+								printf("\nAdded %s to glob\n", decurr->attname);
+							}
 						}
 					}
-					else
-					{
-						//printf("i>1 (next value)\n");
-						decurr->LSON=NULL;
-						decurr->RSON=curr2;
-
-						curr2->parent=first;
-
-						printf("\n%s -RSON-> %s", decurr->attname, decurr->RSON->attname);
-						decurr=decurr->RSON;
-						updatePosNeg(decurr->equivalent, values, nvalues, nattributes, test);
-						if (glob.head==NULL){
-						glob.head=decurr;
-						printf("\nAdded %s to glob\n", decurr->attname);
-						}
-						else{
-							globcurr=glob.head;
-							while(globcurr->globnext!=NULL){
-								globcurr=globcurr->globnext;
-							}
-							decurr->parent=first;
-							decurr->globnext=NULL;
-							globcurr->globnext=decurr;
-							printf("\nAdded %s to glob\n", decurr->attname);
-						}
-					}
+					curr2=curr2->next;
 				}
-				curr2=curr2->next;
-			}
-			/*
-			while(decurr!=NULL)
-			{
-				//printf("\ndecurr: %s\n", decurr->attname);
-				addSubtree(decurr->equivalent, values, nvalues, nattributes, test, decisionTree);
-				decurr=decurr->RSON;
-			}
-			*/
-			
+				/*
+				while(decurr!=NULL)
+				{
+					//printf("\ndecurr: %s\n", decurr->attname);
+					addSubtree(decurr->equivalent, values, nvalues, nattributes, test, decisionTree);
+					decurr=decurr->RSON;
+				}
+				*/
+				
 
+			//}
 		}
 	}
 }
