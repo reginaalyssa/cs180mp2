@@ -47,7 +47,7 @@ float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int
 int getMaxGain(int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 int isUsed(int attribute, att * test);
 void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test, tree * decisionTree);
-int getParents(int attribute, att * test);
+int updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 
 att glob;
 
@@ -130,7 +130,7 @@ int main()
 	}
 
 	fscanf(file2, "%d\n", &nvalues);
-	struct attnode * curr;
+	attnode * curr;
 	for(i=0; i<nvalues; i++)
 	{
 		for(j=0; j<nattributes; j++)
@@ -190,23 +190,16 @@ int main()
 	int nega=negativeValues(1, 7, values, nvalues, nattributes, &test);
 	printf("Negative of high wrt sunny: %d\n", nega);*/
 
-	getParents(1, &test);
-	getParents(2, &test);
-	getParents(3, &test);
-	getParents(4, &test);
-	getParents(5, &test);
-	getParents(6, &test);
-	getParents(7, &test);
-	getParents(8, &test);
-	getParents(9, &test);
-	getParents(10, &test);
-	getParents(-1, &test);
-
-	getParents(-2, &test);
-
-	getParents(-3, &test);
-
-	getParents(-4, &test);
+	updatePosNeg(1, values, nvalues, nattributes, &test);
+	updatePosNeg(2, values, nvalues, nattributes, &test);
+	updatePosNeg(3, values, nvalues, nattributes, &test);
+	updatePosNeg(4, values, nvalues, nattributes, &test);
+	updatePosNeg(5, values, nvalues, nattributes, &test);
+	updatePosNeg(6, values, nvalues, nattributes, &test);
+	updatePosNeg(7, values, nvalues, nattributes, &test);
+	updatePosNeg(8, values, nvalues, nattributes, &test);
+	updatePosNeg(9, values, nvalues, nattributes, &test);
+	updatePosNeg(10, values, nvalues, nattributes, &test);
 }
 
 char * removeNewline(char * str)
@@ -237,8 +230,8 @@ void initTree(tree * foo)
 
 void addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent)
 {
-	struct attnode * node;
-	struct attnode * curr;
+	attnode * node;
+	attnode * curr;
 
 	node=(attnode*)malloc(sizeof(attnode));
 	strcpy(node->attname, attname);
@@ -271,7 +264,7 @@ void addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent)
 
 void showList(att * foo)
 {
-	struct attnode * curr;
+	attnode * curr;
 	curr=foo->head;
 	if(foo->head!=NULL)
 	{
@@ -285,8 +278,8 @@ void showList(att * foo)
 
 int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
 {
-	struct attnode * curr;
-	struct attnode * yes;
+	attnode * curr;
+	attnode * yes;
 	int i, j, k;
 	int positivectr=0;
 	if(S==0)
@@ -365,8 +358,8 @@ int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 
 int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
 {
-	struct attnode * curr;
-	struct attnode * no;
+	attnode * curr;
+	attnode * no;
 	int i, j, k;
 	int negativectr=0;
 	if(S==0)
@@ -478,8 +471,8 @@ float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, 
 
 float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
 {
-	struct attnode * curr;
-	struct attnode * curr2;
+	attnode * curr;
+	attnode * curr2;
 	float entropy;
 	float entropy2;
 	float sum=0;
@@ -541,13 +534,16 @@ int getMaxGain(int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, 
 			}
 		}
 	}
-	if (max==0){
+	if (max==0)
+	{
 		int pos=positiveValues(0, S, values, nvalues, nattributes, test);
 		int neg=negativeValues(0, S, values, nvalues, nattributes, test);
-		if (pos>neg){
+		if (pos>neg)
+		{
 			maxAtt=100;
 		}
-		else{
+		else
+		{
 			maxAtt=101;
 		}
 	}
@@ -821,21 +817,29 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 	}
 }
 
-
-int getParents(int attribute, att * test)
+int updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
 {
 	attnode * curr;
 	attnode * curr2;
+	attnode * realnode;
+	attnode * yes;
+	attnode * no;
 	int parents[LENGTH];
 	int parentsctr=0;
+	int positivectr=0;
+	int negativectr=0;
+	int i, j, k;
 
 	curr=test->head;
 	while(curr!=NULL)
 	{
 		if(curr->equivalent==attribute)
 		{
+			parents[parentsctr]=curr->equivalent;
+			parentsctr++;
+			realnode=curr;
 			printf("%s's parent is %s\n", curr->attname, curr->parent->attname);
-			if(curr->parent!=NULL)
+			if(curr->parent!=NULL && curr->parent->equivalent>0)
 			{
 				parents[parentsctr]=curr->parent->equivalent;
 				printf("%d appended to parents with counter %d\n", curr->parent->equivalent, parentsctr);
@@ -852,7 +856,7 @@ int getParents(int attribute, att * test)
 	while(curr!=NULL)
 	{
 		printf("%s's parent is %s\n", curr->attname, curr->parent->attname);
-		if(curr->parent!=NULL)
+		if(curr->parent!=NULL && curr->parent->equivalent>0)
 		{
 			parents[parentsctr]=curr->parent->equivalent;
 			printf("%d appended to parents with counter %d\n", curr->parent->equivalent, parentsctr);
@@ -861,12 +865,68 @@ int getParents(int attribute, att * test)
 		curr=curr->parent;
 		//Append sa list
 	}
-	printf("\nArray consists of ");
+	printf("Array consists of ");
 
-	int i;
 	for(i=0; i<parentsctr; i++)
 	{
 		printf("%d, ", parents[i]);
 	}
-	printf("\n");
+	printf("Parentsctr: %d\n", parentsctr);
+
+	yes=test->head;
+	while(yes!=NULL)
+	{
+		if(strcmp(yes->attname, "Yes")==0)
+		{
+			break;
+		}
+		yes=yes->next;
+	}
+
+	no=test->head;
+	while(no!=NULL)
+	{
+		if(strcmp(no->attname, "No")==0)
+		{
+			break;
+		}
+		no=no->next;
+	}
+
+	int breakouter=0;
+	int matchingctr;
+	// Check 2D array na nandun lahat
+	for(i=0; i<nvalues; i++)
+	{
+		matchingctr=0;
+		for(j=0; j<nattributes; j++)
+		{
+			for(k=0; k<parentsctr; k++)
+			{
+				//printf("%d==%d?\n", parents[k], values[i][j]);
+				if(parents[k]==values[i][j])
+				{
+					matchingctr++;
+					//printf("Nagmatch yung value ni parents[%d]=%d and values[%d][%d]=%d\n", k, parents[k], i, j, values[i][j]);
+				}
+			}
+		}
+		if(matchingctr==parentsctr)
+		{
+			if(values[i][nattributes-1]==no->equivalent)
+			{
+				negativectr++;
+			}
+			else if(values[i][nattributes-1]==yes->equivalent)
+			{
+				positivectr++;
+			}
+			printf("Nandito yung value sa row %d\n", i+1);
+		}
+	}
+	printf("Positive Rows: %d\nNegative Rows: %d\n\n", positivectr, negativectr);
+	realnode->positivetracker=positivectr;
+	realnode->negativetracker=negativectr;
+
+	// Pagkaexit, before icheck yung gain check if + or - tracker ==0 if yes, wag na idagdag yung node
 }
