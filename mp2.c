@@ -15,6 +15,8 @@ struct attnode
 	int y;
 	int equivalent;
 	int used;
+	int positivetracker;
+	int negativetracker;
 	struct attnode * next;
 	struct attnode * globnext;
 	struct attnode * LSON;
@@ -45,6 +47,7 @@ float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int
 int getMaxGain(int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 int isUsed(int attribute, att * test);
 void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test, tree * decisionTree);
+int getParents(int attribute, att * test);
 
 att glob;
 
@@ -178,9 +181,32 @@ int main()
 	while(node!=NULL){
 		//addSubtree(node->equivalent, values, nvalues, nattributes, &test, &decisionTree);
 		//printf("\n%s", node->attname);
-		printf("%s\tparent: %s\n", node->attname, node->parent->attname);
+		//printf("%s\tparent: %s\n", node->attname, node->parent->attname);
 		node=node->globnext;
 	}
+
+	/*int posi=positiveValues(1, 7, values, nvalues, nattributes, &test);
+	printf("Positive of high wrt sunny: %d\n", posi);
+	int nega=negativeValues(1, 7, values, nvalues, nattributes, &test);
+	printf("Negative of high wrt sunny: %d\n", nega);*/
+
+	getParents(1, &test);
+	getParents(2, &test);
+	getParents(3, &test);
+	getParents(4, &test);
+	getParents(5, &test);
+	getParents(6, &test);
+	getParents(7, &test);
+	getParents(8, &test);
+	getParents(9, &test);
+	getParents(10, &test);
+	getParents(-1, &test);
+
+	getParents(-2, &test);
+
+	getParents(-3, &test);
+
+	getParents(-4, &test);
 }
 
 char * removeNewline(char * str)
@@ -220,6 +246,8 @@ void addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent)
 	node->y=y;
 	node->equivalent=equivalent;
 	node->used=0;
+	node->positivetracker=0;
+	node->negativetracker=0;
 	node->next=NULL;
 
 	if(foo->head==NULL)
@@ -330,7 +358,7 @@ int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 			}
 		}
 	}
-	printf("Positive: %d\n", positivectr);
+	//printf("Positive: %d\n", positivectr);
 	return positivectr;
 
 }
@@ -410,7 +438,7 @@ int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 			}
 		}
 	}
-	printf("Negative: %d\n", negativectr);
+	//printf("Negative: %d\n", negativectr);
 	return negativectr;
 }
 
@@ -459,7 +487,7 @@ float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int
 	int numerator;
 	float gain;
 	entropy=getEntropy(S, S, values, nvalues, nattributes, test);
-	printf("ooh yas %lf\n", entropy);
+	//printf("ooh yas %lf\n", entropy);
 
 	curr=test->head;
 	while(curr!=NULL)
@@ -479,12 +507,12 @@ float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int
 		{
 			//printf("Found curr2: %s %d %d %d\n", curr2->attname, curr2->x, curr2->y, curr2->equivalent);
 			entropy2=getEntropy(S, curr2->equivalent, values, nvalues, nattributes, test);
-			printf("Entropy: %lf\n", entropy2);
+			//printf("Entropy: %lf\n", entropy2);
 			numerator=positiveValues(S, curr2->equivalent, values, nvalues, nattributes, test)+negativeValues(S, curr2->equivalent, values, nvalues, nattributes, test);
-			printf("Numerator: %d\n", numerator);
-			printf("Denominator: %d\n", denominator);
+			//printf("Numerator: %d\n", numerator);
+			//printf("Denominator: %d\n", denominator);
 			sum+=(float)numerator/denominator*entropy2;
-			printf("Sum ryt nao: %lf\n", sum);
+			//printf("Sum ryt nao: %lf\n", sum);
 		}
 		curr2=curr2->next;
 	}
@@ -708,12 +736,15 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 				curr=curr->next;
 			}
 
-			first=from;
+			//first=from;
 
 			printf(" as LSON ni %s", from->attname);
 
 			from->LSON=decurr;
+			decurr->parent=from;
 			curr=decurr;
+
+			first=decurr;
 
 			//printf("\n%s(top)-LSON->%s-LSON->%s\n", decisionTree->top->attname, decisionTree->top->LSON->attname, decisionTree->top->LSON->LSON->attname);
 
@@ -731,6 +762,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					if (i==1)
 					{
 						decurr->LSON=curr2;
+						curr2->parent=decurr;
 						decurr->RSON=NULL;
 						printf("\n%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
 						decurr=decurr->LSON;
@@ -787,4 +819,39 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 		}
 	}
+}
+
+
+int getParents(int attribute, att * test)
+{
+	attnode * curr;
+	attnode * curr2;
+	int parents[LENGTH];
+	int i=0;
+
+	curr=test->head;
+	while(curr!=NULL)
+	{
+		if(curr->equivalent==attribute)
+		{
+			break;
+		}
+		curr=curr->next;
+	}
+
+	printf("%s's parent is %s\n", curr->attname, curr->parent->attname);
+	/*while(curr2!=NULL)
+	{
+		curr=test->head;
+		while(curr!=NULL)
+		{
+			if(curr->equivalent==attribute)
+			{
+				break;
+			}
+			curr=curr->next;
+		}
+		curr=curr->parent;
+		parents[i]=curr->equivalent;
+	}*/
 }
