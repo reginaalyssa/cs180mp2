@@ -1223,6 +1223,16 @@ int classify(att * test, att * train, tree * decisionTree)
 		printf("Value is now %s\n", decurr->attname);
 	}
 	printf("Nag%s na!\n", decurr->attname);
+
+	curr=test->head;
+    while(curr!=NULL)
+    {
+    	curr2=curr;
+    	curr=curr->next;
+    	test->head=curr;
+    	free(curr2);
+    }
+
 	if(decurr->equivalent==no->equivalent)
 	{
 		return 0;
