@@ -83,7 +83,7 @@ int main()
 			Cool                // 3rd value of 2nd attribute
 	*/
 
-	file=fopen("joinorg.txt", "r");
+	file=fopen("input.txt", "r");
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -122,7 +122,7 @@ int main()
 		Rain Cool Normal Light Yes      // 5th input value
 	*/
 
-	file2=fopen("inputsurvey.txt", "r");
+	file2=fopen("inputvalues.txt", "r");
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -166,9 +166,6 @@ int main()
 	//getGain(0, -1, values, nvalues, nattributes, &test);
 	//i=getMaxGain(0, values, nvalues, nattributes, &test);
 	//printf("Node with maximum gain is %d\n", i);
-	float r;
-	r=getGain(7, -2, values, nvalues, nattributes, &test);
-	printf("r is %lf\n", r);
 	addSubtree(0, values, nvalues, nattributes, &test, &decisionTree);
 	node=glob.head;
 	while(node!=NULL){
@@ -463,6 +460,7 @@ float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, 
 	else
 	{
 		entropy=(-pos*logpos)-(neg*logneg);
+		printf("entropy of %d wrt %d=-%d/%dlg%d/%d - %d/%dlg%d/%d\n", attribute, S, positive, total, positive, total, negative, total, negative, total);
 	}
 	//printf("%d %lf %lf\n", total, pos, neg);
 
