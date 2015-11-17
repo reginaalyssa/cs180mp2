@@ -43,8 +43,8 @@ void showList(att * foo);
 int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
-float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
-int getMaxGain(int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
+float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
+int getMaxGain(int parent, int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 int isUsed(int attribute, att * test);
 void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test, tree * decisionTree);
 void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
@@ -83,7 +83,7 @@ int main()
 			Cool                // 3rd value of 2nd attribute
 	*/
 
-	file=fopen("input.txt", "r");
+	file=fopen("joinorg.txt", "r");
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -122,7 +122,7 @@ int main()
 		Rain Cool Normal Light Yes      // 5th input value
 	*/
 
-	file2=fopen("inputvalues.txt", "r");
+	file2=fopen("inputsurvey.txt", "r");
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -461,7 +461,7 @@ float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, 
 	else
 	{
 		entropy=(-pos*logpos)-(neg*logneg);
-		printf("entropy of %d wrt %d=-%d/%dlg%d/%d - %d/%dlg%d/%d\n", attribute, S, positive, total, positive, total, negative, total, negative, total);
+		printf("entropy of %d wrt %d=-%d/%dlg%d/%d - %d/%dlg%d/%d=%lf\n", attribute, S, positive, total, positive, total, negative, total, negative, total, entropy);
 	}
 	//printf("%d %lf %lf\n", total, pos, neg);
 
@@ -469,18 +469,44 @@ float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, 
 	return entropy;
 }
 
-float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
+float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
 {
 	attnode * curr;
 	attnode * curr2;
 	float entropy;
 	float entropy2;
 	float sum=0;
-	int denominator=positiveValues(S, S, values, nvalues, nattributes, test)+negativeValues(S, S, values, nvalues, nattributes, test);
+	int denominator;
+	//=positiveValues(S, S, values, nvalues, nattributes, test)+negativeValues(S, S, values, nvalues, nattributes, test);
 	int numerator;
 	float gain;
-	entropy=getEntropy(S, S, values, nvalues, nattributes, test);
+	int positive;
+	int negative;
+	entropy=getEntropy(parent, S, values, nvalues, nattributes, test);
 	//printf("ooh yas %lf\n", entropy);
+
+	curr=test->head;
+	while(curr!=NULL)
+	{
+		if(curr->equivalent==S)
+		{
+			break;
+		}
+		curr=curr->next;
+	}
+	if(S==0)
+	{
+		positive=positiveValues(S, S, values, nvalues, nattributes, test);
+		negative=negativeValues(S, S, values, nvalues, nattributes, test);	
+	}
+	else
+	{
+		updatePosNeg(parent, S, values, nvalues, nattributes, test);
+		positive=curr->positivetracker;
+		negative=curr->negativetracker;
+
+	}
+	denominator=positive+negative;
 
 	curr=test->head;
 	while(curr!=NULL)
@@ -501,11 +527,25 @@ float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int
 			//printf("Found curr2: %s %d %d %d\n", curr2->attname, curr2->x, curr2->y, curr2->equivalent);
 			entropy2=getEntropy(S, curr2->equivalent, values, nvalues, nattributes, test);
 			//printf("Entropy: %lf\n", entropy2);
-			if (entropy2!=0){
-				numerator=positiveValues(S, curr2->equivalent, values, nvalues, nattributes, test)+negativeValues(S, curr2->equivalent, values, nvalues, nattributes, test);
+			if (entropy2!=0)
+			{
+				if(S==0)
+				{
+					positive=positiveValues(S, curr2->equivalent, values, nvalues, nattributes, test);
+					negative=negativeValues(S, curr2->equivalent, values, nvalues, nattributes, test);
+				}
+				else
+				{
+					updatePosNeg(S, curr2->equivalent, values, nvalues, nattributes, test);
+					positive=curr2->positivetracker;
+					negative=curr2->negativetracker;
+				}
+				numerator=positive+negative;
+				//positiveValues(S, curr2->equivalent, values, nvalues, nattributes, test)+negativeValues(S, curr2->equivalent, values, nvalues, nattributes, test);
 				//printf("Numerator: %d\n", numerator);
 				//printf("Denominator: %d\n", denominator);
 				sum+=(float)numerator/denominator*entropy2;
+				printf("Gain+=%d/%d * %lf\n", numerator, denominator, entropy2);
 				//printf("Sum ryt nao: %lf\n", sum);
 			}
 		}
@@ -516,7 +556,7 @@ float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int
 	return gain;
 }
 
-int getMaxGain(int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
+int getMaxGain(int parent, int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
 {
 	float max=0;
 	int maxAtt;
@@ -527,7 +567,7 @@ int getMaxGain(int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, 
 	{
 		if(isUsed(i, test)==0)
 		{
-			gain=getGain(S, i, values, nvalues, nattributes, test);
+			gain=getGain(parent, S, i, values, nvalues, nattributes, test);
 			printf("Gain of %d and %d is %lf\n", S, i, gain);
 			if(gain>max)
 			{
@@ -595,7 +635,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 	if (decisionTree->top==NULL)
 	{
 		// getMaxGain
-		toAdd = getMaxGain(0, values, nvalues, nattributes, test);
+		toAdd = getMaxGain(0, 0, values, nvalues, nattributes, test);
 
 		curr=test->head;
 		while (curr!=NULL){
@@ -748,7 +788,8 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 			yes->parent=curr;
 		}
 
-		else{
+		else
+		{
 			//if (toAdd==100||toAdd==101){
 				//printf("\n>>Append %d yes/no na node (backlog muna)\n", attribute);
 				//decurr = addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent);
@@ -756,7 +797,16 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 			//printf("%d\n", toAdd);
 			//else{
 				// find decurr
-			toAdd = getMaxGain(attribute, values, nvalues, nattributes, test);
+			curr=test->head;
+			while(curr!=NULL)
+			{
+				if(curr->equivalent==attribute)
+				{
+					break;
+				}
+				curr=curr->next;
+			}
+			toAdd = getMaxGain(curr->parent->equivalent, curr->equivalent, values, nvalues, nattributes, test);
 
 				decurr=decisionTree->top;
 				curr=test->head;
@@ -908,11 +958,11 @@ void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int nvalues,
 			parents[parentsctr]=curr->equivalent;
 			parentsctr++;
 			realnode=curr;
-			printf("%s's parent is %s\n", curr->attname, findS->attname);
+			//printf("%s's parent is %s\n", curr->attname, findS->attname);
 			if(findS->equivalent>0)
 			{
 				parents[parentsctr]=findS->equivalent;
-				printf("%d appended to parents with counter %d\n", findS->equivalent, parentsctr);
+				//printf("%d appended to parents with counter %d\n", findS->equivalent, parentsctr);
 				parentsctr++;				
 			}
 			//Append sa list
@@ -924,23 +974,23 @@ void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int nvalues,
 	curr=findS;
 	while(curr!=NULL)
 	{
-		printf("%s's parent is %s\n", curr->attname, curr->parent->attname);
+		//printf("%s's parent is %s\n", curr->attname, curr->parent->attname);
 		if(curr->parent!=NULL && curr->parent->equivalent>0)
 		{
 			parents[parentsctr]=curr->parent->equivalent;
-			printf("%d appended to parents with counter %d\n", curr->parent->equivalent, parentsctr);
+			//printf("%d appended to parents with counter %d\n", curr->parent->equivalent, parentsctr);
 			parentsctr++;				
 		}
 		curr=curr->parent;
 		//Append sa list
 	}
-	printf("Array consists of ");
+	/*printf("Array consists of ");
 
 	for(i=0; i<parentsctr; i++)
 	{
 		printf("%d, ", parents[i]);
 	}
-	printf("Parentsctr: %d\n", parentsctr);
+	printf("Parentsctr: %d\n", parentsctr);*/
 
 	yes=test->head;
 	while(yes!=NULL)
@@ -993,7 +1043,7 @@ void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int nvalues,
 			//printf("Nandito yung value sa row %d\n", i+1);
 		}
 	}
-	printf("Positive Rows: %d\nNegative Rows: %d\n\n", positivectr, negativectr);
+	// printf("Positive Rows: %d\nNegative Rows: %d\n\n", positivectr, negativectr);
 	if(realnode->equivalent<0)
 	{
 		realnode->positivetracker=-1;
