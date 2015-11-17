@@ -1223,4 +1223,12 @@ int classify(att * test, att * train, tree * decisionTree)
 		printf("Value is now %s\n", decurr->attname);
 	}
 	printf("Nag%s na!\n", decurr->attname);
+	if(decurr->equivalent==no->equivalent)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
 }
