@@ -47,7 +47,7 @@ float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int
 int getMaxGain(int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 int isUsed(int attribute, att * test);
 void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test, tree * decisionTree);
-void updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
+void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test);
 
 att glob;
 
@@ -163,15 +163,10 @@ int main()
 		printf("\n");
 	}*/
 
-	//getGain(0, -1, values, nvalues, nattributes, &test);
-	//i=getMaxGain(0, values, nvalues, nattributes, &test);
-	//printf("Node with maximum gain is %d\n", i);
 	addSubtree(0, values, nvalues, nattributes, &test, &decisionTree);
 	node=glob.head;
 	while(node!=NULL){
 		addSubtree(node->equivalent, values, nvalues, nattributes, &test, &decisionTree);
-		//printf("\n%s", node->attname);
-		//printf("%s\tparent: %s\n", node->attname, node->parent->attname);
 		node=node->globnext;
 	}
 
@@ -180,24 +175,9 @@ int main()
 		printf("\n%s pos: %d, neg: %d\n", node->attname, node->positivetracker, node->negativetracker);
 		node=node->globnext;
 	}
-
-	/*int posi=positiveValues(1, 7, values, nvalues, nattributes, &test);
-	printf("Positive of high wrt sunny: %d\n", posi);
-	int nega=negativeValues(1, 7, values, nvalues, nattributes, &test);
-	printf("Negative of high wrt sunny: %d\n", nega);*/
-
-	/*
-	updatePosNeg(1, values, nvalues, nattributes, &test);
-	updatePosNeg(2, values, nvalues, nattributes, &test);
-	updatePosNeg(3, values, nvalues, nattributes, &test);
-	updatePosNeg(4, values, nvalues, nattributes, &test);
-	updatePosNeg(5, values, nvalues, nattributes, &test);
-	updatePosNeg(6, values, nvalues, nattributes, &test);
-	updatePosNeg(7, values, nvalues, nattributes, &test);
-	updatePosNeg(8, values, nvalues, nattributes, &test);
-	updatePosNeg(9, values, nvalues, nattributes, &test);
-	updatePosNeg(10, values, nvalues, nattributes, &test);
-	*/
+	updatePosNeg(1, 8, values, nvalues, nattributes, &test);
+	updatePosNeg(2, 8, values, nvalues, nattributes, &test);
+	updatePosNeg(3, 8, values, nvalues, nattributes, &test);
 }
 
 char * removeNewline(char * str)
@@ -610,7 +590,6 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 			curr=curr->next;
 		}
 		decurr=decisionTree->top;
-		updatePosNeg(decurr->equivalent, values, nvalues, nattributes, test);
 
 		printf("\nTop nung dec tree: %s\n", decurr->attname);
 		//addSubtree(decisionTree, test, decisionTree->top->equivalent, nattributes);
@@ -633,9 +612,9 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					printf("i=1 (first value)\n");
 					decurr->LSON=curr2;
 					curr2->parent=decurr;
-					updatePosNeg(curr2->equivalent, values, nvalues, nattributes, test);
+					updatePosNeg(curr2->parent->equivalent, curr2->equivalent, values, nvalues, nattributes, test);
 					decurr->RSON=NULL;
-					printf("%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
+					printf("%s -LSON-> %s\n", decurr->attname, decurr->LSON->attname);
 					decurr=decurr->LSON;
 					if (glob.head==NULL){
 						//printf("Null glob");
@@ -662,8 +641,8 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 					curr2->parent=first;
 
-					updatePosNeg(curr2->equivalent, values, nvalues, nattributes, test);
-					printf("%s -RSON-> %s", decurr->attname, decurr->RSON->attname);
+					updatePosNeg(curr2->parent->equivalent, curr2->equivalent, values, nvalues, nattributes, test);
+					printf("%s -RSON-> %s\n", decurr->attname, decurr->RSON->attname);
 					decurr=decurr->RSON;
 					if (glob.head==NULL){
 						decurr->globnext=NULL;
@@ -790,7 +769,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 				from->LSON=decurr;
 				decurr->parent=from;
-				updatePosNeg(decurr->equivalent, values, nvalues, nattributes, test);
+				updatePosNeg(decurr->parent->equivalent, decurr->equivalent, values, nvalues, nattributes, test);
 				curr=decurr;
 
 				first=decurr;
@@ -812,9 +791,9 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 						{
 							decurr->LSON=curr2;
 							curr2->parent=decurr;
-							updatePosNeg(curr2->equivalent, values, nvalues, nattributes, test);
+							updatePosNeg(curr2->parent->equivalent, curr2->equivalent, values, nvalues, nattributes, test);
 							decurr->RSON=NULL;
-							printf("\n%s -LSON-> %s", decurr->attname, decurr->LSON->attname);
+							printf("\n%s -LSON-> %s\n", decurr->attname, decurr->LSON->attname);
 							decurr=decurr->LSON;
 							if (glob.head==NULL){
 								decurr->globnext=NULL;
@@ -842,7 +821,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 							printf("\n%s -RSON-> %s", decurr->attname, decurr->RSON->attname);
 							decurr=decurr->RSON;
-							updatePosNeg(decurr->equivalent, values, nvalues, nattributes, test);
+							updatePosNeg(decurr->parent->equivalent, decurr->equivalent, values, nvalues, nattributes, test);
 							if (glob.head==NULL){
 							glob.head=decurr;
 							printf("\nAdded %s to glob\n", decurr->attname);
@@ -876,10 +855,11 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 	}
 }
 
-void updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
+void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
 {
 	attnode * curr;
 	attnode * curr2;
+	attnode * findS;
 	attnode * realnode;
 	attnode * yes;
 	attnode * no;
@@ -889,6 +869,16 @@ void updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int na
 	int negativectr=0;
 	int i, j, k;
 
+	findS=test->head;
+	while(findS!=NULL)
+	{
+		if(findS->equivalent==S)
+		{
+			break;
+		}
+		findS=findS->next;
+	}
+
 	curr=test->head;
 	while(curr!=NULL)
 	{
@@ -897,11 +887,11 @@ void updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int na
 			parents[parentsctr]=curr->equivalent;
 			parentsctr++;
 			realnode=curr;
-			printf("%s's parent is %s\n", curr->attname, curr->parent->attname);
-			if(curr->parent!=NULL && curr->parent->equivalent>0)
+			printf("%s's parent is %s\n", curr->attname, findS->attname);
+			if(findS->equivalent>0)
 			{
-				parents[parentsctr]=curr->parent->equivalent;
-				printf("%d appended to parents with counter %d\n", curr->parent->equivalent, parentsctr);
+				parents[parentsctr]=findS->equivalent;
+				printf("%d appended to parents with counter %d\n", findS->equivalent, parentsctr);
 				parentsctr++;				
 			}
 			//Append sa list
@@ -910,8 +900,7 @@ void updatePosNeg(int attribute, int values[LENGTH][LENGTH], int nvalues, int na
 		curr=curr->next;
 	}
 
-
-	curr=curr->parent;
+	curr=findS;
 	while(curr!=NULL)
 	{
 		printf("%s's parent is %s\n", curr->attname, curr->parent->attname);
