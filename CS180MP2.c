@@ -177,12 +177,12 @@ int main()
 		node=node->globnext;
 	}
 
-	/*file3=fopen("joinorg.txt", "r");
+	file3=fopen("testing.txt", "r");
 	if(file3==NULL)
 	{
 		printf("Missing or empty file.\n");
-		return 0;
-	}*/
+		//return 0;
+	}
 
 	// Male 4th 1-2 Extrovert 18-21 3
 	int testing[6]={1, 6, 9, 14, 17, 22};
@@ -510,7 +510,6 @@ float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, 
 	else
 	{
 		entropy=(-pos*logpos)-(neg*logneg);
-		printf("entropy of %d wrt %d=-%d/%dlg%d/%d - %d/%dlg%d/%d=%lf\n", attribute, S, positive, total, positive, total, negative, total, negative, total, entropy);
 	}
 	return entropy;
 }
@@ -519,6 +518,7 @@ float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int 
 {
 	attnode * curr;
 	attnode * curr2;
+	attnode * findS;
 	float entropy;
 	float entropy2;
 	float sum=0;
@@ -529,14 +529,14 @@ float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int 
 	int negative;
 	entropy=getEntropy(parent, S, values, nvalues, nattributes, train);
 
-	curr=train->head;
-	while(curr!=NULL)
+	findS=train->head;
+	while(findS!=NULL)
 	{
-		if(curr->equivalent==S)
+		if(findS->equivalent==S)
 		{
 			break;
 		}
-		curr=curr->next;
+		findS=findS->next;
 	}
 	if(S==0)
 	{
@@ -546,8 +546,8 @@ float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int 
 	else
 	{
 		updatePosNeg(parent, S, values, nvalues, nattributes, train);
-		positive=curr->positivetracker;
-		negative=curr->negativetracker;
+		positive=findS->positivetracker;
+		negative=findS->negativetracker;
 
 	}
 	denominator=positive+negative;
@@ -583,13 +583,19 @@ float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int 
 				}
 				numerator=positive+negative;
 				sum+=(float)numerator/denominator*entropy2;
-				printf("Gain+=%d/%d * %lf\n", numerator, denominator, entropy2);
 			}
 		}
 		curr2=curr2->next;
 	}
 	gain=entropy-sum;
-	printf("Gain: %lf\n", gain);
+	if(S==0)
+	{
+		printf("Gain of %s is %lf\n", curr->attname, gain);
+	}
+	else
+	{
+		printf("Gain of %s and %s is %lf\n", findS->attname, curr->attname, gain);
+	}
 	return gain;
 }
 
@@ -600,13 +606,13 @@ int getMaxGain(int parent, int S, int values[LENGTH][LENGTH], int nvalues, int n
 	int i;
 	int usedctr=0;
 	float gain;
+	attnode * curr;
 
 	for(i=-1; i>-nattributes; i--)
 	{
 		if(isUsed(i, train)==0)
 		{
 			gain=getGain(parent, S, i, values, nvalues, nattributes, train);
-			printf("Gain of %d and %d is %lf\n", S, i, gain);
 			if(gain>max)
 			{
 				max=gain;
@@ -621,7 +627,6 @@ int getMaxGain(int parent, int S, int values[LENGTH][LENGTH], int nvalues, int n
 
 	if(usedctr==nattributes-1)
 	{
-		printf("Wala na pwedeng idagdag na attribute awthu\n");
 		maxAtt=102;
 	}
 
@@ -641,6 +646,19 @@ int getMaxGain(int parent, int S, int values[LENGTH][LENGTH], int nvalues, int n
 			}
 		}
 	}
+	if(maxAtt!=100 && maxAtt!=102 && maxAtt!=100)
+	{
+		curr=train->head;
+		while(curr!=NULL)
+		{
+			if(curr->equivalent==maxAtt)
+			{
+				break;
+			}
+			curr=curr->next;
+		}
+		printf("Attribute chosen is %s\n", curr->attname);
+	}
 	return maxAtt;
 }
 
@@ -654,12 +672,10 @@ int isUsed(int attribute, att * train)
 		{
 			if(curr->used==1)
 			{
-				printf("%s is used\n", curr->attname);
 				return 1;
 			}
 			else
 			{
-				printf("%s hasn't been used yet\n", curr->attname);
 				return 0;
 			}
 		}
@@ -703,7 +719,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 		}
 		decurr=decisionTree->top;
 
-		printf("\nTop nung dec tree: %s\n", decurr->attname);
+		printf("Root of Decision Tree: %s\n", decurr->attname);
 
 		first=decurr;
 
@@ -715,7 +731,6 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 				i++;
 				if(i==1)
 				{
-					printf("i=1 (first value)\n");
 					decurr->LSON=curr2;
 					curr2->parent=decurr;
 					updatePosNeg(curr2->parent->equivalent, curr2->equivalent, values, nvalues, nattributes, train);
@@ -726,7 +741,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					{
 						decurr->globnext=NULL;
 						glob.head=decurr;
-						printf("\nAdded %s to glob\n", decurr->attname);
+						//printf("\nAdded %s to glob\n", decurr->attname);
 					}
 					else
 					{
@@ -738,12 +753,11 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 						decurr->parent=first;
 						decurr->globnext=NULL;
 						globcurr->globnext=decurr;
-						printf("\nAdded %s to glob\n", decurr->attname);
+						//printf("\nAdded %s to glob\n", decurr->attname);
 					}
 				}
 				else
 				{
-					printf("\ni>1 (next value)\n");
 					decurr->LSON=NULL;
 					decurr->RSON=curr2;
 
@@ -756,7 +770,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					{
 						decurr->globnext=NULL;
 						glob.head=decurr;
-						printf("\nAdded %s to glob\n", decurr->attname);
+						//printf("\nAdded %s to glob\n", decurr->attname);
 					}
 					else
 					{
@@ -768,7 +782,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 						decurr->parent=first;
 						decurr->globnext=NULL;
 						globcurr->globnext=decurr;
-						printf("\nAdded %s to glob\n", decurr->attname);
+						//printf("\nAdded %s to glob\n", decurr->attname);
 					}
 				}
 			}
@@ -778,8 +792,6 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 	else
 	{
-		printf("\nAttribute: %d\n", attribute);
-
 		decurr=decisionTree->top;
 		curr=train->head;
 		while(curr!=NULL)
@@ -790,6 +802,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 			}
 			curr=curr->next;
 		}
+		printf("\nAttribute: %s\n", curr->attname);
 
 		if(curr->positivetracker==0)
 		{
@@ -835,12 +848,11 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 				curr=curr->next;
 			}
 
-			printf("Kunin toAdd\n");
 			toAdd=getMaxGain(curr->parent->equivalent, curr->equivalent, values, nvalues, nattributes, train);
 		
 			if(toAdd==102)
 			{
-				printf("\nDahil used na si %s:\n", curr->attname);
+				//printf("Dahil used na si %s:\n", curr->attname);
 				curr=train->head;
 				while(curr!=NULL)
 				{
@@ -853,7 +865,8 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 				if(curr->positivetracker>curr->negativetracker)
 				{
-					printf("APPEND YES %d dahil wala na (No: %d)\n", curr->positivetracker, curr->negativetracker);
+					printf("APPEND YES\n");
+					//printf("APPEND YES %d dahil wala na (No: %d)\n", curr->positivetracker, curr->negativetracker);
 					yes=train->head;
 					while(yes!=NULL)
 					{
@@ -868,7 +881,8 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 				}
 				else
 				{
-					printf("APPEND NO %d dahil wala na (Yes: %d)\n", curr->negativetracker, curr->positivetracker);
+					printf("APPEND NO\n");
+					//printf("APPEND NO %d dahil wala na (Yes: %d)\n", curr->negativetracker, curr->positivetracker);
 					no=train->head;
 					while(no!=NULL)
 					{
@@ -902,7 +916,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 				}
 				curr->used=1;
 
-				printf("\n>>Ia-add ang %s", decurr->attname);
+				printf("%s", decurr->attname);
 				
 				curr=train->head;
 				while(curr!=NULL)
@@ -915,7 +929,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 					curr=curr->next;
 				}
 
-				printf(" as LSON ni %s", from->attname);
+				printf(" -LSON-> %s\n", from->attname);
 
 				from->LSON=decurr;
 				decurr->parent=from;
@@ -935,13 +949,13 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 							curr2->parent=decurr;
 							updatePosNeg(curr2->parent->equivalent, curr2->equivalent, values, nvalues, nattributes, train);
 							decurr->RSON=NULL;
-							printf("\n%s -LSON-> %s\n", decurr->attname, decurr->LSON->attname);
+							printf("%s -LSON-> %s\n", decurr->attname, decurr->LSON->attname);
 							decurr=decurr->LSON;
 							if(glob.head==NULL)
 							{
 								decurr->globnext=NULL;
 								glob.head=decurr;
-								printf("\nAdded %s to glob\n", decurr->attname);
+								//printf("\nAdded %s to glob\n", decurr->attname);
 							}
 							else
 							{
@@ -953,7 +967,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 								decurr->parent=first;
 								decurr->globnext=NULL;
 								globcurr->globnext=decurr;
-								printf("\nAdded %s to glob\n", decurr->attname);
+								//printf("\nAdded %s to glob\n", decurr->attname);
 							}
 						}
 						else
@@ -963,13 +977,13 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 							curr2->parent=first;
 
-							printf("\n%s -RSON-> %s", decurr->attname, decurr->RSON->attname);
+							printf("%s -RSON-> %s\n", decurr->attname, decurr->RSON->attname);
 							decurr=decurr->RSON;
 							updatePosNeg(decurr->parent->equivalent, decurr->equivalent, values, nvalues, nattributes, train);
 							if(glob.head==NULL)
 							{
 								glob.head=decurr;
-								printf("\nAdded %s to glob\n", decurr->attname);
+								//printf("\nAdded %s to glob\n", decurr->attname);
 							}
 							else
 							{
@@ -981,7 +995,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 								decurr->parent=first;
 								decurr->globnext=NULL;
 								globcurr->globnext=decurr;
-								printf("\nAdded %s to glob\n", decurr->attname);
+								//printf("\nAdded %s to glob\n", decurr->attname);
 							}
 						}
 					}
@@ -1134,7 +1148,7 @@ int classify(att * test, att * train, tree * decisionTree)
 	}
 	
 	decurr=decisionTree->top;
-	printf("\nNasa top tayo ng decision tree with value %s\n", decurr->attname);
+	printf("Nasa top tayo ng decision tree with value %s\n", decurr->attname);
 	while(decurr->equivalent!=yes->equivalent && decurr->equivalent!=no->equivalent)
 	{
 		printf("Di pa nagyes/no. %d==%d? or %d==%d\n", decurr->equivalent, yes->equivalent, decurr->equivalent, no->equivalent);
