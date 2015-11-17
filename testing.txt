@@ -1,0 +1,11 @@
+10
+Male 3rd 2-4 Ambivert 18-21 2
+Male 3rd 2-4 Introvert 15-17 1
+Female 3rd 2-4 Introvert 18-21 3
+Male 3rd 2-4 Ambivert 18-21 3
+Female 3rd 2-4 Extrovert 15-17 2
+Male 2nd 2-4 Ambivert Underload 4+
+Male 4th 5+ Extrovert 15-17 3
+Female 2nd 0-1 Introvert 18-21 1
+Female 3rd 2-4 Introvert 18-21 4+
+Male 3rd 2-4 Extrovert 18-21 3

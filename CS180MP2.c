@@ -41,14 +41,14 @@ void init(att * foo);
 void initTree(tree * foo);
 void addNode(att * foo, char attname[LENGTH], int x, int y, int equivalent);
 void showList(att * foo);
-int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train);
-int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train);
-float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train);
-float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train);
-int getMaxGain(int parent, int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train);
+int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train);
+int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train);
+float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train);
+float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train);
+int getMaxGain(int parent, int S, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train);
 int isUsed(int attribute, att * train);
-void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train, tree * decisionTree);
-void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train);
+void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train, tree * decisionTree);
+void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train);
 
 int classify(att * test, att * train, tree * decisionTree);
 
@@ -59,10 +59,12 @@ int main()
 	int i, j, k, l; // Iterators
 	int valuesize;
 	char strInput[LENGTH]; // Buffer for scanning string inputs
-	int values[LENGTH][LENGTH]; // 2D Array to contain integer value equivalents
+	int values[LENGTH][LENGTH]; // 2D Array to contain integer value equivalents of training data
+	int testing[LENGTH]; // Array to contain integer value equivalents of test data
 	int nattributes; // Number of attributes
 	int nchoices; // Number of choices per attribute
-	int nvalues; // Number of values in test data
+	int ntraining; // Number of values in training data
+	int ntesting;
 	FILE * file;
 	FILE * file2;
 	FILE * file3;
@@ -74,9 +76,12 @@ int main()
 	initTree(&decisionTree);
 	init(&glob);
 	attnode * node;
+	attnode * curr;
+	attnode * findtest;
+	attnode * testcurr;
 
 	/*
-		Format of input.txt:
+		Format of initialize.txt:
 			Outlook             // 1st Attribute
 			3                   // Number of values for 1st attribute
 			Sunny               // 1st value of 1st attribute
@@ -119,7 +124,7 @@ int main()
 	showList(&train);
 
 	/*
-		Format of inputvalues.txt:
+		Format of training.txt:
 		5                               // Number of values
 		Sunny Hot High Light No         // 1st input value
 		Sunny Hot High Strong No        // 2nd input value
@@ -135,9 +140,8 @@ int main()
 		return 0;
 	}
 
-	fscanf(file2, "%d\n", &nvalues);
-	attnode * curr;
-	for(i=0; i<nvalues; i++)
+	fscanf(file2, "%d\n", &ntraining);
+	for(i=0; i<ntraining; i++)
 	{
 		for(j=0; j<nattributes; j++)
 		{
@@ -160,7 +164,7 @@ int main()
 
 	printf("\n");   
 
-	/*for(i=0; i<nvalues; i++)
+	/*for(i=0; i<ntraining; i++)
 	{
 		for(j=0; j<nattributes; j++)
 		{
@@ -169,13 +173,23 @@ int main()
 		printf("\n");
 	}*/
 
-	addSubtree(0, values, nvalues, nattributes, &train, &decisionTree);
+	addSubtree(0, values, ntraining, nattributes, &train, &decisionTree);
 	node=glob.head;
 	while(node!=NULL)
 	{
-		addSubtree(node->equivalent, values, nvalues, nattributes, &train, &decisionTree);
+		addSubtree(node->equivalent, values, ntraining, nattributes, &train, &decisionTree);
 		node=node->globnext;
 	}
+
+	/*
+		Format of testing.txt:
+		5                               // Number of values
+		Sunny Hot High Light 	        // 1st input value
+		Sunny Hot High Strong	        // 2nd input value
+		Overcast Hot High Light			// 3rd input value
+		Rain Mild High Light	        // 4th input value
+		Rain Cool Normal Light			// 5th input value
+	*/
 
 	file3=fopen("testing.txt", "r");
 	if(file3==NULL)
@@ -184,11 +198,64 @@ int main()
 		//return 0;
 	}
 
-	// Male 4th 1-2 Extrovert 18-21 3
-	int testing[6]={1, 6, 9, 14, 17, 22};
+	fscanf(file3, "%d\n", &ntesting);
+	for(i=0; i<ntesting; i++)
+	{
+		testcurr=test.head;
+		for(j=0; j<nattributes-1; j++)
+		{
+			fscanf(file3, "%s ", strInput);
+			curr=train.head;
+			while(curr!=NULL)
+			{
+				if(strcmp(strInput, curr->attname)==0)
+				{
+					printf("%s ", curr->attname);
+					testing[j]=curr->equivalent;
+					break;
+				}
+				curr=curr->next;
+			}
+			printf("|%d| ", testing[j]);
+
+		
+			findtest=train.head;
+			while(findtest!=NULL)
+			{
+				if(findtest->equivalent==testing[j])
+				{
+					break;
+				}
+				findtest=findtest->next;
+			}
+			if(test.head==NULL)
+			{
+				test.head=findtest;
+				test.tail=findtest;
+				test.head->testnext=NULL;
+			}
+			else
+			{
+				testcurr=test.head;
+				while(testcurr->testnext!=NULL)
+				{
+					testcurr=testcurr->testnext;
+				}
+				findtest->testnext=NULL;
+				testcurr->testnext=findtest;
+			}
+		}
+		classify(&test, &train, &decisionTree);
+		printf("\n");
+	}
+
+	for(i=0; i<nattributes-1; i++)
+	{
+		//printf("%d ", testing[i]);
+	}
+
+	/*int testing[6]={1, 5, 10, 13, 17, 21};
 	int testingctr=6;
-	attnode * findtest;
-	attnode * testcurr;
 
 	testcurr=test.head;
 	for(i=0; i<testingctr; i++)
@@ -229,6 +296,44 @@ int main()
 
 
 	classify(&test, &train, &decisionTree);
+	int testing2[6]={1, 3, 10, 12, 16, 20};
+	testcurr=test.head;
+	for(i=0; i<testingctr; i++)
+	{
+		findtest=train.head;
+		while(findtest!=NULL)
+		{
+			if(findtest->equivalent==testing2[i])
+			{
+				break;
+			}
+			findtest=findtest->next;
+		}
+		if(test.head==NULL)
+		{
+			test.head=findtest;
+			test.tail=findtest;
+			test.head->testnext=NULL;
+		}
+		else
+		{
+			testcurr=test.head;
+			while(testcurr->testnext!=NULL)
+			{
+				testcurr=testcurr->testnext;
+			}
+			findtest->testnext=NULL;
+			testcurr->testnext=findtest;
+		}
+	}
+
+	testcurr=test.head;
+	while(testcurr!=NULL)
+	{
+		printf("%s ", testcurr->attname);
+		testcurr=testcurr->testnext;
+	}
+	classify(&test, &train, &decisionTree);*/
 }
 
 char * removeNewline(char * str)
@@ -305,7 +410,7 @@ void showList(att * foo)
 	}
 }
 
-int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train)
+int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train)
 {
 	attnode * curr;
 	attnode * yes;
@@ -323,7 +428,7 @@ int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 			yes=yes->next;
 		}
 
-		for(i=0; i<nvalues; i++)
+		for(i=0; i<ntraining; i++)
 		{
 			if(attribute==0)
 			{
@@ -366,7 +471,7 @@ int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 			yes=yes->next;
 		}
 
-		for(i=0; i<nvalues; i++)
+		for(i=0; i<ntraining; i++)
 		{
 			for(j=0; j<nattributes; j++)
 			{
@@ -384,7 +489,7 @@ int positiveValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 
 }
 
-int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train)
+int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train)
 {
 	attnode * curr;
 	attnode * no;
@@ -402,7 +507,7 @@ int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 			no=no->next;
 		}
 
-		for(i=0; i<nvalues; i++)
+		for(i=0; i<ntraining; i++)
 		{
 			if(attribute==0)
 			{
@@ -445,7 +550,7 @@ int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 			no=no->next;
 		}
 
-		for(i=0; i<nvalues; i++)
+		for(i=0; i<ntraining; i++)
 		{
 			for(j=0; j<nattributes; j++)
 			{
@@ -462,7 +567,7 @@ int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 	return negativectr;
 }
 
-float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train)
+float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train)
 {
 	float entropy;
 	int positive;
@@ -479,12 +584,12 @@ float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, 
 	}
 	if(S==0)
 	{
-		positive=positiveValues(S, attribute, values, nvalues, nattributes, train);
-		negative=negativeValues(S, attribute, values, nvalues, nattributes, train);
+		positive=positiveValues(S, attribute, values, ntraining, nattributes, train);
+		negative=negativeValues(S, attribute, values, ntraining, nattributes, train);
 	}
 	else
 	{
-		updatePosNeg(S, attribute, values, nvalues, nattributes, train);
+		updatePosNeg(S, attribute, values, ntraining, nattributes, train);
 		positive=curr->positivetracker;
 		negative=curr->negativetracker;
 	}
@@ -514,7 +619,7 @@ float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, 
 	return entropy;
 }
 
-float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train)
+float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train)
 {
 	attnode * curr;
 	attnode * curr2;
@@ -527,7 +632,7 @@ float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int 
 	float gain;
 	int positive;
 	int negative;
-	entropy=getEntropy(parent, S, values, nvalues, nattributes, train);
+	entropy=getEntropy(parent, S, values, ntraining, nattributes, train);
 
 	findS=train->head;
 	while(findS!=NULL)
@@ -540,12 +645,12 @@ float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int 
 	}
 	if(S==0)
 	{
-		positive=positiveValues(S, S, values, nvalues, nattributes, train);
-		negative=negativeValues(S, S, values, nvalues, nattributes, train);	
+		positive=positiveValues(S, S, values, ntraining, nattributes, train);
+		negative=negativeValues(S, S, values, ntraining, nattributes, train);	
 	}
 	else
 	{
-		updatePosNeg(parent, S, values, nvalues, nattributes, train);
+		updatePosNeg(parent, S, values, ntraining, nattributes, train);
 		positive=findS->positivetracker;
 		negative=findS->negativetracker;
 
@@ -567,17 +672,17 @@ float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int 
 	{
 		if(curr2->y==curr->y)
 		{
-			entropy2=getEntropy(S, curr2->equivalent, values, nvalues, nattributes, train);
+			entropy2=getEntropy(S, curr2->equivalent, values, ntraining, nattributes, train);
 			if(entropy2!=0)
 			{
 				if(S==0)
 				{
-					positive=positiveValues(S, curr2->equivalent, values, nvalues, nattributes, train);
-					negative=negativeValues(S, curr2->equivalent, values, nvalues, nattributes, train);
+					positive=positiveValues(S, curr2->equivalent, values, ntraining, nattributes, train);
+					negative=negativeValues(S, curr2->equivalent, values, ntraining, nattributes, train);
 				}
 				else
 				{
-					updatePosNeg(S, curr2->equivalent, values, nvalues, nattributes, train);
+					updatePosNeg(S, curr2->equivalent, values, ntraining, nattributes, train);
 					positive=curr2->positivetracker;
 					negative=curr2->negativetracker;
 				}
@@ -599,7 +704,7 @@ float getGain(int parent, int S, int attribute, int values[LENGTH][LENGTH], int 
 	return gain;
 }
 
-int getMaxGain(int parent, int S, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train)
+int getMaxGain(int parent, int S, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train)
 {
 	float max=0;
 	int maxAtt;
@@ -612,7 +717,7 @@ int getMaxGain(int parent, int S, int values[LENGTH][LENGTH], int nvalues, int n
 	{
 		if(isUsed(i, train)==0)
 		{
-			gain=getGain(parent, S, i, values, nvalues, nattributes, train);
+			gain=getGain(parent, S, i, values, ntraining, nattributes, train);
 			if(gain>max)
 			{
 				max=gain;
@@ -634,8 +739,8 @@ int getMaxGain(int parent, int S, int values[LENGTH][LENGTH], int nvalues, int n
 	{
 		if(max==0)
 		{
-			int pos=positiveValues(0, S, values, nvalues, nattributes, train);
-			int neg=negativeValues(0, S, values, nvalues, nattributes, train);
+			int pos=positiveValues(0, S, values, ntraining, nattributes, train);
+			int neg=negativeValues(0, S, values, ntraining, nattributes, train);
 			if(pos>neg)
 			{
 				maxAtt=100;
@@ -684,7 +789,7 @@ int isUsed(int attribute, att * train)
 	return 0;
 }
 
-void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train, tree * decisionTree)
+void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train, tree * decisionTree)
 {
 	attnode * curr;
 	attnode * curr2;
@@ -700,7 +805,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 	if(decisionTree->top==NULL)
 	{
-		toAdd=getMaxGain(0, 0, values, nvalues, nattributes, train);
+		toAdd=getMaxGain(0, 0, values, ntraining, nattributes, train);
 
 		curr=train->head;
 		while(curr!=NULL)
@@ -733,7 +838,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 				{
 					decurr->LSON=curr2;
 					curr2->parent=decurr;
-					updatePosNeg(curr2->parent->equivalent, curr2->equivalent, values, nvalues, nattributes, train);
+					updatePosNeg(curr2->parent->equivalent, curr2->equivalent, values, ntraining, nattributes, train);
 					decurr->RSON=NULL;
 					printf("%s -LSON-> %s\n", decurr->attname, decurr->LSON->attname);
 					decurr=decurr->LSON;
@@ -763,7 +868,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 					curr2->parent=first;
 
-					updatePosNeg(curr2->parent->equivalent, curr2->equivalent, values, nvalues, nattributes, train);
+					updatePosNeg(curr2->parent->equivalent, curr2->equivalent, values, ntraining, nattributes, train);
 					printf("%s -RSON-> %s\n", decurr->attname, decurr->RSON->attname);
 					decurr=decurr->RSON;
 					if(glob.head==NULL)
@@ -848,7 +953,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 				curr=curr->next;
 			}
 
-			toAdd=getMaxGain(curr->parent->equivalent, curr->equivalent, values, nvalues, nattributes, train);
+			toAdd=getMaxGain(curr->parent->equivalent, curr->equivalent, values, ntraining, nattributes, train);
 		
 			if(toAdd==102)
 			{
@@ -933,7 +1038,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 				from->LSON=decurr;
 				decurr->parent=from;
-				updatePosNeg(decurr->parent->equivalent, decurr->equivalent, values, nvalues, nattributes, train);
+				updatePosNeg(decurr->parent->equivalent, decurr->equivalent, values, ntraining, nattributes, train);
 				curr=decurr;
 
 				first=decurr;
@@ -947,7 +1052,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 						{
 							decurr->LSON=curr2;
 							curr2->parent=decurr;
-							updatePosNeg(curr2->parent->equivalent, curr2->equivalent, values, nvalues, nattributes, train);
+							updatePosNeg(curr2->parent->equivalent, curr2->equivalent, values, ntraining, nattributes, train);
 							decurr->RSON=NULL;
 							printf("%s -LSON-> %s\n", decurr->attname, decurr->LSON->attname);
 							decurr=decurr->LSON;
@@ -979,7 +1084,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 
 							printf("%s -RSON-> %s\n", decurr->attname, decurr->RSON->attname);
 							decurr=decurr->RSON;
-							updatePosNeg(decurr->parent->equivalent, decurr->equivalent, values, nvalues, nattributes, train);
+							updatePosNeg(decurr->parent->equivalent, decurr->equivalent, values, ntraining, nattributes, train);
 							if(glob.head==NULL)
 							{
 								glob.head=decurr;
@@ -1006,7 +1111,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int nvalues, int natt
 	}
 }
 
-void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * train)
+void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int ntraining, int nattributes, att * train)
 {
 	attnode * curr;
 	attnode * curr2;
@@ -1081,7 +1186,7 @@ void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int nvalues,
 
 	int breakouter=0;
 	int matchingctr;
-	for(i=0; i<nvalues; i++)
+	for(i=0; i<ntraining; i++)
 	{
 		matchingctr=0;
 		for(j=0; j<nattributes; j++)
