@@ -416,8 +416,29 @@ int negativeValues(int S, int attribute, int values[LENGTH][LENGTH], int nvalues
 float getEntropy(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int nattributes, att * test)
 {
 	float entropy;
-	int positive=positiveValues(S, attribute, values, nvalues, nattributes, test);
-	int negative=negativeValues(S, attribute, values, nvalues, nattributes, test);
+	int positive;
+	int negative;
+	attnode * curr;
+	curr=test->head;
+	while(curr!=NULL)
+	{
+		if(curr->equivalent==attribute)
+		{
+			break;
+		}
+		curr=curr->next;
+	}
+	if(S==0)
+	{
+		positive=positiveValues(S, attribute, values, nvalues, nattributes, test);
+		negative=negativeValues(S, attribute, values, nvalues, nattributes, test);
+	}
+	else
+	{
+		updatePosNeg(S, attribute, values, nvalues, nattributes, test);
+		positive=curr->positivetracker;
+		negative=curr->negativetracker;
+	}
 	float pos;
 	float neg;
 	float logpos;
