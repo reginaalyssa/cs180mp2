@@ -216,6 +216,9 @@ int main()
 		printf("%s ", testcurr->attname);
 		testcurr=testcurr->testnext;
 	}
+
+
+	classify(&test, &train, &decisionTree);
 }
 
 char * removeNewline(char * str)
@@ -1170,6 +1173,54 @@ int classify(att * test, att * train, tree * decisionTree)
 {
 	attnode * curr;
 	attnode * curr2;
+	attnode * decurr;
+	attnode * yes;
+	attnode * no;
 
-	//curr=
+	yes=train->head;
+	while(yes!=NULL)
+	{
+		if(strcmp(yes->attname, "Yes")==0)
+		{
+			break;
+		}
+		yes=yes->next;
+	}
+
+	no=train->head;
+	while(no!=NULL)
+	{
+		if(strcmp(no->attname, "No")==0)
+		{
+			break;
+		}
+		no=no->next;
+	}
+	
+	decurr=decisionTree->top;
+	printf("\nNasa top tayo ng decision tree with value %s\n", decurr->attname);
+	while(decurr->equivalent!=yes->equivalent && decurr->equivalent!=no->equivalent)
+	{
+		printf("Di pa nagyes/no. %d==%d? or %d==%d\n", decurr->equivalent, yes->equivalent, decurr->equivalent, no->equivalent);
+		curr=test->head;
+		while(curr!=NULL)
+		{
+			if(curr->y==decurr->y)
+			{
+				printf("Found matching input with equivalent y value %s.\n", curr->attname);
+				break;
+			}
+			curr=curr->testnext;
+		}
+		decurr=decurr->LSON;
+		printf("Move to left son with value %s and decurr eq is %d\n", decurr->attname, decurr->equivalent);
+		while(curr->equivalent!=decurr->equivalent)
+		{
+			decurr=decurr->RSON;
+			printf("Move to right son with value %s\n", decurr->attname);
+		}
+		decurr=decurr->LSON;
+		printf("Value is now %s\n", decurr->attname);
+	}
+	printf("Nag%s na!\n", decurr->attname);
 }
