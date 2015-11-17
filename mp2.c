@@ -83,7 +83,7 @@ int main()
 			Cool                // 3rd value of 2nd attribute
 	*/
 
-	file=fopen("input.txt", "r");
+	file=fopen("joinorg.txt", "r");
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -122,7 +122,7 @@ int main()
 		Rain Cool Normal Light Yes      // 5th input value
 	*/
 
-	file2=fopen("inputvalues.txt", "r");
+	file2=fopen("inputsurvey.txt", "r");
 	if(file==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -502,11 +502,13 @@ float getGain(int S, int attribute, int values[LENGTH][LENGTH], int nvalues, int
 			//printf("Found curr2: %s %d %d %d\n", curr2->attname, curr2->x, curr2->y, curr2->equivalent);
 			entropy2=getEntropy(S, curr2->equivalent, values, nvalues, nattributes, test);
 			//printf("Entropy: %lf\n", entropy2);
-			numerator=positiveValues(S, curr2->equivalent, values, nvalues, nattributes, test)+negativeValues(S, curr2->equivalent, values, nvalues, nattributes, test);
-			//printf("Numerator: %d\n", numerator);
-			//printf("Denominator: %d\n", denominator);
-			sum+=(float)numerator/denominator*entropy2;
-			//printf("Sum ryt nao: %lf\n", sum);
+			if (entropy2!=0){
+				numerator=positiveValues(S, curr2->equivalent, values, nvalues, nattributes, test)+negativeValues(S, curr2->equivalent, values, nvalues, nattributes, test);
+				//printf("Numerator: %d\n", numerator);
+				//printf("Denominator: %d\n", denominator);
+				sum+=(float)numerator/denominator*entropy2;
+				//printf("Sum ryt nao: %lf\n", sum);
+			}
 		}
 		curr2=curr2->next;
 	}
