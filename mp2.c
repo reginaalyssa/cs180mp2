@@ -990,7 +990,7 @@ void updatePosNeg(int S, int attribute, int values[LENGTH][LENGTH], int nvalues,
 			{
 				positivectr++;
 			}
-			printf("Nandito yung value sa row %d\n", i+1);
+			//printf("Nandito yung value sa row %d\n", i+1);
 		}
 	}
 	printf("Positive Rows: %d\nNegative Rows: %d\n\n", positivectr, negativectr);
