@@ -1001,7 +1001,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int na
 						no=no->next;
 					}
 
-					printf("%s -OUTCOME-> %s\n", curr->attname, yes->attname);
+					printf("%s -OUTCOME-> %s\n", curr->attname, no->attname);
 					curr->LSON=no;
 					no->parent=curr;
 				}
