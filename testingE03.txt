@@ -1,0 +1,21 @@
+20
+Male 1st 2-4 Extrovert 15-17 0
+Male 1st 0-1 Ambivert 15-17 0
+Female 1st 2-4 Introvert 15-17 0
+Male 1st 2-4 Introvert 15-17 0
+Male 3rd 2-4 Ambivert 18-21 4+
+Male 3rd 5+ Introvert 15-17 2
+Female 3rd 2-4 Introvert 15-17 4+
+Female 2nd 2-4 Ambivert 18-21 1
+Male 3rd 1-2 Introvert 15-17 4+
+Female 1st 1-2 Introvert 18-21 0
+Male 2nd 2-4 Introvert 18-21 2
+Male 3rd 1-2 Introvert 18-21 1
+Male 3rd 2-4 Ambivert 18-21 1
+Male 3rd 0-1 Ambivert 18-21 1
+Male 2nd 2-4 Introvert 15-17 3
+Female 2nd 2-4 Ambivert 15-17 1
+Male 4th 0-1 Extrovert 15-17 1
+Female 2nd 2-4 Extrovert 18-21 1
+Male 1st 2-4 Ambivert 15-17 0
+Male Others 5+ Introvert 15-17 3

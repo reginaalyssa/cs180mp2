@@ -133,8 +133,8 @@ int main()
 		Rain Cool Normal Light Yes      // 5th input value
 	*/
 
-	file2=fopen("training.txt", "r");
-	if(file==NULL)
+	file2=fopen("trainingE03.txt", "r");
+	if(file2==NULL)
 	{
 		printf("Missing or empty file.\n");
 		return 0;
@@ -191,11 +191,11 @@ int main()
 		Rain Cool Normal Light			// 5th input value
 	*/
 
-	file3=fopen("testing.txt", "r");
+	file3=fopen("testingE03.txt", "r");
 	if(file3==NULL)
 	{
 		printf("Missing or empty file.\n");
-		//return 0;
+		return 0;
 	}
 
 	fscanf(file3, "%d\n", &ntesting);
@@ -216,7 +216,6 @@ int main()
 				}
 				curr=curr->next;
 			}
-			printf("|%d| ", testing[j]);
 
 		
 			findtest=train.head;
@@ -224,6 +223,7 @@ int main()
 			{
 				if(findtest->equivalent==testing[j])
 				{
+					//printf("Found attribute %s\n", findtest->attname);
 					break;
 				}
 				findtest=findtest->next;
@@ -245,16 +245,17 @@ int main()
 				testcurr->testnext=findtest;
 			}
 		}
+		printf("\n");
 		classify(&test, &train, &decisionTree);
 		printf("\n");
 	}
 
-	for(i=0; i<nattributes-1; i++)
+	/*for(i=0; i<nattributes-1; i++)
 	{
 		//printf("%d ", testing[i]);
 	}
 
-	/*int testing[6]={1, 5, 10, 13, 17, 21};
+	int testing[6]={1, 5, 10, 13, 17, 21};
 	int testingctr=6;
 
 	testcurr=test.head;
@@ -777,6 +778,7 @@ int isUsed(int attribute, att * train)
 		{
 			if(curr->used==1)
 			{
+				printf("%s is already a part of the tree\n", curr->attname);
 				return 1;
 			}
 			else
@@ -911,7 +913,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int na
 
 		if(curr->positivetracker==0)
 		{
-			printf("APPEND NO\n");
+			//printf("Leaf Node with value No\n");
 			no=train->head;
 			while(no!=NULL)
 			{
@@ -921,13 +923,13 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int na
 				}
 				no=no->next;
 			}
+			printf("%s -OUTCOME-> %s\n", curr->attname, no->attname);
 			curr->LSON=no;
 			no->parent=curr;
 
 		}
 		else if(curr->negativetracker==0)
 		{
-			printf("APPEND YES\n");
 			yes=train->head;
 			while(yes!=NULL)
 			{
@@ -937,6 +939,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int na
 				}
 				yes=yes->next;
 			}
+			printf("%s -OUTCOME-> %s\n", curr->attname, yes->attname);
 			curr->LSON=yes;
 			yes->parent=curr;
 		}
@@ -954,8 +957,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int na
 			}
 
 			toAdd=getMaxGain(curr->parent->equivalent, curr->equivalent, values, ntraining, nattributes, train);
-		
-			if(toAdd==102)
+			if(toAdd==102||toAdd==100||toAdd==101)
 			{
 				//printf("Dahil used na si %s:\n", curr->attname);
 				curr=train->head;
@@ -970,7 +972,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int na
 
 				if(curr->positivetracker>curr->negativetracker)
 				{
-					printf("APPEND YES\n");
+					//printf("Leaf Node with value Yes\n");
 					//printf("APPEND YES %d dahil wala na (No: %d)\n", curr->positivetracker, curr->negativetracker);
 					yes=train->head;
 					while(yes!=NULL)
@@ -981,12 +983,13 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int na
 						}
 						yes=yes->next;
 					}
+					printf("%s -OUTCOME-> %s\n", curr->attname, yes->attname);
 					curr->LSON=yes;
 					yes->parent=curr;
 				}
 				else
 				{
-					printf("APPEND NO\n");
+					//printf("Leaf Node with value No\n");
 					//printf("APPEND NO %d dahil wala na (Yes: %d)\n", curr->negativetracker, curr->positivetracker);
 					no=train->head;
 					while(no!=NULL)
@@ -997,6 +1000,8 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int na
 						}
 						no=no->next;
 					}
+
+					printf("%s -OUTCOME-> %s\n", curr->attname, yes->attname);
 					curr->LSON=no;
 					no->parent=curr;
 				}
@@ -1020,8 +1025,6 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int na
 					curr=curr->next;
 				}
 				curr->used=1;
-
-				printf("%s", decurr->attname);
 				
 				curr=train->head;
 				while(curr!=NULL)
@@ -1034,7 +1037,7 @@ void addSubtree(int attribute, int values[LENGTH][LENGTH], int ntraining, int na
 					curr=curr->next;
 				}
 
-				printf(" -LSON-> %s\n", from->attname);
+				printf("%s -LSON-> %s\n", from->attname, decurr->attname);
 
 				from->LSON=decurr;
 				decurr->parent=from;
@@ -1253,40 +1256,33 @@ int classify(att * test, att * train, tree * decisionTree)
 	}
 	
 	decurr=decisionTree->top;
-	printf("Nasa top tayo ng decision tree with value %s\n", decurr->attname);
+	printf("Top: %s\n", decurr->attname);
 	while(decurr->equivalent!=yes->equivalent && decurr->equivalent!=no->equivalent)
 	{
-		printf("Di pa nagyes/no. %d==%d? or %d==%d\n", decurr->equivalent, yes->equivalent, decurr->equivalent, no->equivalent);
+		//printf("Di pa nagyes/no. %d==%d? or %d==%d\n", decurr->equivalent, yes->equivalent, decurr->equivalent, no->equivalent);
 		curr=test->head;
 		while(curr!=NULL)
 		{
 			if(curr->y==decurr->y)
 			{
-				printf("Found matching input with equivalent y value %s.\n", curr->attname);
+				//printf("Found matching input with equivalent y value %s.\n", curr->attname);
 				break;
 			}
 			curr=curr->testnext;
 		}
 		decurr=decurr->LSON;
-		printf("Move to left son with value %s and decurr eq is %d\n", decurr->attname, decurr->equivalent);
+		printf("Move to LSON with value %s\n", decurr->attname);
 		while(curr->equivalent!=decurr->equivalent)
 		{
 			decurr=decurr->RSON;
-			printf("Move to right son with value %s\n", decurr->attname);
+			printf("Move to RSON with value %s\n", decurr->attname);
 		}
 		decurr=decurr->LSON;
-		printf("Value is now %s\n", decurr->attname);
+		//printf("Value is now %s\n", decurr->attname);
 	}
-	printf("Nag%s na!\n", decurr->attname);
+	printf("Result: %s\n", decurr->attname);
 
-	curr=test->head;
-    while(curr!=NULL)
-    {
-    	curr2=curr;
-    	curr=curr->next;
-    	test->head=curr;
-    	free(curr2);
-    }
+	test->head=NULL;
 
 	if(decurr->equivalent==no->equivalent)
 	{

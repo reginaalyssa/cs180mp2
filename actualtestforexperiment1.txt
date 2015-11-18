@@ -1,0 +1,281 @@
+Testing Actual
+E01N01
+20 // Odd numbers from 13 to 51
+Male 1st 2-4 Extrovert 15-17 0 Yes
+Male 1st 0-1 Ambivert 15-17 0 Yes
+Female 1st 2-4 Introvert 15-17 0 Yes
+Male 1st 2-4 Introvert 15-17 0 Yes
+Male 3rd 2-4 Ambivert 18-21 4+ No
+Male 3rd 5+ Introvert 15-17 2 No
+Female 3rd 2-4 Introvert 15-17 4+ No
+Female 2nd 2-4 Ambivert 18-21 1 Yes
+Male 3rd 1-2 Introvert 15-17 4+ Yes
+Female 1st 1-2 Introvert 18-21 0 No
+Male 2nd 2-4 Introvert 18-21 2 No
+Male 3rd 1-2 Introvert 18-21 1 No
+Male 3rd 2-4 Ambivert 18-21 1 Yes
+Male 3rd 0-1 Ambivert 18-21 1 No
+Male 2nd 2-4 Introvert 15-17 3 Yes
+Female 2nd 2-4 Ambivert 15-17 1 Yes
+Male 4th 0-1 Extrovert 15-17 1 No
+Female 2nd 2-4 Extrovert 18-21 1 Yes
+Male 1st 2-4 Ambivert 15-17 0 No
+Male Others 5+ Introvert 15-17 3 Yes
+
+E01N02
+20 // 32 to 51
+Male 3rd 0-1 Extrovert 18-21 2 Yes
+Male 2nd 2-4 Introvert 18-21 2 No
+Female 2nd 2-4 Ambivert 18-21 1 Yes
+Male 3rd 1-2 Introvert 18-21 1 No
+Male 3rd 1-2 Ambivert 18-21 3 No
+Male 3rd 2-4 Ambivert 18-21 1 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 3rd 0-1 Ambivert 18-21 1 No
+Male 3rd 2-4 Introvert 15-17 2 No
+Male 2nd 2-4 Introvert 15-17 3 Yes
+Male 2nd 0-1 Extrovert 18-21 1 No
+Female 2nd 2-4 Ambivert 15-17 1 Yes
+Male 4th 2-4 Ambivert 18-21 3 No
+Male 4th 0-1 Extrovert 15-17 1 No
+Male 1st 1-2 Extrovert 15-17 0 Yes
+Female 2nd 2-4 Extrovert 18-21 1 Yes
+Female 3rd 2-4 Introvert 15-17 1 Yes
+Male 1st 2-4 Ambivert 15-17 0 No
+Male 3rd 2-4 Ambivert 15-17 2 Yes
+Male Others 5+ Introvert 15-17 3 Yes
+
+E01N03
+20 // 2 to 21
+Male 3rd 2-4 Ambivert 18-21 2 No
+Male 3rd 2-4 Introvert 15-17 1 No
+Female 3rd 2-4 Introvert 18-21 3 No
+Male 3rd 2-4 Ambivert 18-21 3 No
+Female 3rd 2-4 Extrovert 15-17 2 Yes
+Male 2nd 2-4 Ambivert Underload 4+ Yes
+Male 4th 5+ Extrovert 15-17 3 No
+Female 2nd 0-1 Introvert 18-21 1 No
+Female 3rd 2-4 Introvert 18-21 4+ Yes
+Male 3rd 2-4 Extrovert 18-21 3 No
+Female 3rd 2-4 Extrovert 15-17 2 Yes
+Male 1st 2-4 Extrovert 15-17 0 Yes
+Male 3rd 2-4 Ambivert 18-21 4+ No
+Male 1st 0-1 Ambivert 15-17 0 Yes
+Male 1st 2-4 Introvert 15-17 0 Yes
+Female 1st 2-4 Introvert 15-17 0 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 1st 2-4 Introvert 15-17 0 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 3rd 2-4 Ambivert 18-21 4+ No
+
+E01N04
+20 // 7 to 11, 22 to 26, 32 to 36, 42 to 46
+Male 2nd 2-4 Ambivert Underload 4+ Yes
+Male 4th 5+ Extrovert 15-17 3 No
+Female 2nd 0-1 Introvert 18-21 1 No
+Female 3rd 2-4 Introvert 18-21 4+ Yes
+Male 3rd 2-4 Extrovert 18-21 3 No
+Male 3rd 2-4 Introvert 18-21 1 No
+Male 3rd 5+ Introvert 15-17 2 No
+Male 3rd 5+ Introvert 15-17 1 Yes
+Female 3rd 2-4 Introvert 15-17 4+ No
+Male 1st 2-4 Introvert 15-17 0 No
+Male 3rd 0-1 Extrovert 18-21 2 Yes
+Male 2nd 2-4 Introvert 18-21 2 No
+Female 2nd 2-4 Ambivert 18-21 1 Yes
+Male 3rd 1-2 Introvert 18-21 1 No
+Male 3rd 1-2 Ambivert 18-21 3 No
+Male 2nd 0-1 Extrovert 18-21 1 No
+Female 2nd 2-4 Ambivert 15-17 1 Yes
+Male 4th 2-4 Ambivert 18-21 3 No
+Male 4th 0-1 Extrovert 15-17 1 No
+Male 1st 1-2 Extrovert 15-17 0 Yes
+
+E01N05
+20
+Male 4th 5+ Extrovert 15-17 3 No
+Female 2nd 0-1 Introvert 18-21 1 No
+Female 3rd 2-4 Introvert 18-21 4+ Yes
+Male 3rd 2-4 Extrovert 18-21 3 No
+Male 1st 0-1 Ambivert 15-17 0 Yes
+Male 1st 2-4 Introvert 15-17 0 Yes
+Female 1st 2-4 Introvert 15-17 0 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 1st 2-4 Introvert 15-17 0 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 3rd 2-4 Ambivert 18-21 4+ No
+Male 1st 2-4 Introvert 15-17 0 No
+Male 3rd 2-4 Introvert 15-17 2 No
+Male 2nd 2-4 Introvert 15-17 3 Yes
+Male 2nd 0-1 Extrovert 18-21 1 No
+Female 2nd 2-4 Ambivert 15-17 1 Yes
+Male 4th 2-4 Ambivert 18-21 3 No
+Male 4th 0-1 Extrovert 15-17 1 No
+Male 1st 2-4 Ambivert 15-17 0 No
+Male 3rd 2-4 Ambivert 15-17 2 Yes
+
+Training
+E01N01
+30 // Puro even until 50 tas odd until 11
+Male 3rd 2-4 Ambivert 18-21 2 No
+Female 3rd 2-4 Introvert 18-21 3 No
+Female 3rd 2-4 Extrovert 15-17 2 Yes
+Male 4th 5+ Extrovert 15-17 3 No
+Female 3rd 2-4 Introvert 18-21 4+ Yes
+Female 3rd 2-4 Extrovert 15-17 2 Yes
+Male 3rd 2-4 Ambivert 18-21 4+ No
+Male 1st 2-4 Introvert 15-17 0 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 3rd 2-4 Introvert 18-21 1 No
+Male 3rd 5+ Introvert 15-17 1 Yes
+Male 1st 2-4 Introvert 15-17 0 No
+Male 1st 1-2 Ambivert 18-21 0 No
+Male 4th 2-4 Ambivert 18-21 1 Yes
+Male 3rd 0-1 Extrovert 18-21 2 Yes
+Female 2nd 2-4 Ambivert 18-21 1 Yes
+Male 3rd 1-2 Ambivert 18-21 3 No
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 3rd 2-4 Introvert 15-17 2 No
+Male 2nd 0-1 Extrovert 18-21 1 No
+Male 4th 2-4 Ambivert 18-21 3 No
+Male 1st 1-2 Extrovert 15-17 0 Yes
+Female 3rd 2-4 Introvert 15-17 1 Yes
+Male 3rd 2-4 Ambivert 15-17 2 Yes
+Male 3rd 2-4 Introvert 15-17 1 No
+Male 3rd 2-4 Ambivert 18-21 3 No
+Male 2nd 2-4 Ambivert Underload 4+ Yes
+Female 2nd 0-1 Introvert 18-21 1 No
+Male 3rd 2-4 Extrovert 18-21 3 No
+
+E01N02
+30 // 2 to 31
+Male 3rd 2-4 Ambivert 18-21 2 No
+Male 3rd 2-4 Introvert 15-17 1 No
+Female 3rd 2-4 Introvert 18-21 3 No
+Male 3rd 2-4 Ambivert 18-21 3 No
+Female 3rd 2-4 Extrovert 15-17 2 Yes
+Male 2nd 2-4 Ambivert Underload 4+ Yes
+Male 4th 5+ Extrovert 15-17 3 No
+Female 2nd 0-1 Introvert 18-21 1 No
+Female 3rd 2-4 Introvert 18-21 4+ Yes
+Male 3rd 2-4 Extrovert 18-21 3 No
+Female 3rd 2-4 Extrovert 15-17 2 Yes
+Male 1st 2-4 Extrovert 15-17 0 Yes
+Male 3rd 2-4 Ambivert 18-21 4+ No
+Male 1st 0-1 Ambivert 15-17 0 Yes
+Male 1st 2-4 Introvert 15-17 0 Yes
+Female 1st 2-4 Introvert 15-17 0 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 1st 2-4 Introvert 15-17 0 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 3rd 2-4 Ambivert 18-21 4+ No
+Male 3rd 2-4 Introvert 18-21 1 No
+Male 3rd 5+ Introvert 15-17 2 No
+Male 3rd 5+ Introvert 15-17 1 Yes
+Female 3rd 2-4 Introvert 15-17 4+ No
+Male 1st 2-4 Introvert 15-17 0 No
+Female 2nd 2-4 Ambivert 18-21 1 Yes
+Male 1st 1-2 Ambivert 18-21 0 No
+Male 3rd 1-2 Introvert 15-17 4+ Yes
+Male 4th 2-4 Ambivert 18-21 1 Yes
+Female 1st 1-2 Introvert 18-21 0 No
+
+E01N03
+30 // 22 to 51
+Male 3rd 2-4 Introvert 18-21 1 No
+Male 3rd 5+ Introvert 15-17 2 No
+Male 3rd 5+ Introvert 15-17 1 Yes
+Female 3rd 2-4 Introvert 15-17 4+ No
+Male 1st 2-4 Introvert 15-17 0 No
+Female 2nd 2-4 Ambivert 18-21 1 Yes
+Male 1st 1-2 Ambivert 18-21 0 No
+Male 3rd 1-2 Introvert 15-17 4+ Yes
+Male 4th 2-4 Ambivert 18-21 1 Yes
+Female 1st 1-2 Introvert 18-21 0 No
+Male 3rd 0-1 Extrovert 18-21 2 Yes
+Male 2nd 2-4 Introvert 18-21 2 No
+Female 2nd 2-4 Ambivert 18-21 1 Yes
+Male 3rd 1-2 Introvert 18-21 1 No
+Male 3rd 1-2 Ambivert 18-21 3 No
+Male 3rd 2-4 Ambivert 18-21 1 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 3rd 0-1 Ambivert 18-21 1 No
+Male 3rd 2-4 Introvert 15-17 2 No
+Male 2nd 2-4 Introvert 15-17 3 Yes
+Male 2nd 0-1 Extrovert 18-21 1 No
+Female 2nd 2-4 Ambivert 15-17 1 Yes
+Male 4th 2-4 Ambivert 18-21 3 No
+Male 4th 0-1 Extrovert 15-17 1 No
+Male 1st 1-2 Extrovert 15-17 0 Yes
+Female 2nd 2-4 Extrovert 18-21 1 Yes
+Female 3rd 2-4 Introvert 15-17 1 Yes
+Male 1st 2-4 Ambivert 15-17 0 No
+Male 3rd 2-4 Ambivert 15-17 2 Yes
+Male Others 5+ Introvert 15-17 3 Yes
+
+E01N04
+30 // 2 to 6, 12 to 21, 27 to 31, 37 to 41, 47 to 51
+Male 3rd 2-4 Ambivert 18-21 2 No
+Male 3rd 2-4 Introvert 15-17 1 No
+Female 3rd 2-4 Introvert 18-21 3 No
+Male 3rd 2-4 Ambivert 18-21 3 No
+Female 3rd 2-4 Extrovert 15-17 2 Yes
+Female 3rd 2-4 Extrovert 15-17 2 Yes
+Male 1st 2-4 Extrovert 15-17 0 Yes
+Male 3rd 2-4 Ambivert 18-21 4+ No
+Male 1st 0-1 Ambivert 15-17 0 Yes
+Male 1st 2-4 Introvert 15-17 0 Yes
+Female 1st 2-4 Introvert 15-17 0 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 1st 2-4 Introvert 15-17 0 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 3rd 2-4 Ambivert 18-21 4+ No
+Female 2nd 2-4 Ambivert 18-21 1 Yes
+Male 1st 1-2 Ambivert 18-21 0 No
+Male 3rd 1-2 Introvert 15-17 4+ Yes
+Male 4th 2-4 Ambivert 18-21 1 Yes
+Female 1st 1-2 Introvert 18-21 0 No
+Male 3rd 2-4 Ambivert 18-21 1 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 3rd 0-1 Ambivert 18-21 1 No
+Male 3rd 2-4 Introvert 15-17 2 No
+Male 2nd 2-4 Introvert 15-17 3 Yes
+Female 2nd 2-4 Extrovert 18-21 1 Yes
+Female 3rd 2-4 Introvert 15-17 1 Yes
+Male 1st 2-4 Ambivert 15-17 0 No
+Male 3rd 2-4 Ambivert 15-17 2 Yes
+Male Others 5+ Introvert 15-17 3 Yes
+
+E01N05
+30
+Male 3rd 2-4 Ambivert 18-21 2 No
+Male 3rd 2-4 Introvert 15-17 1 No
+Female 3rd 2-4 Introvert 18-21 3 No
+Male 3rd 2-4 Ambivert 18-21 3 No
+Female 3rd 2-4 Extrovert 15-17 2 Yes
+Male 2nd 2-4 Ambivert Underload 4+ Yes
+Female 3rd 2-4 Extrovert 15-17 2 Yes
+Male 1st 2-4 Extrovert 15-17 0 Yes
+Male 3rd 2-4 Ambivert 18-21 4+ No
+Male 3rd 2-4 Introvert 18-21 1 No
+Male 3rd 5+ Introvert 15-17 2 No
+Male 3rd 5+ Introvert 15-17 1 Yes
+Female 3rd 2-4 Introvert 15-17 4+ No
+Female 2nd 2-4 Ambivert 18-21 1 Yes
+Male 1st 1-2 Ambivert 18-21 0 No
+Male 3rd 1-2 Introvert 15-17 4+ Yes
+Male 4th 2-4 Ambivert 18-21 1 Yes
+Female 1st 1-2 Introvert 18-21 0 No
+Male 3rd 0-1 Extrovert 18-21 2 Yes
+Male 2nd 2-4 Introvert 18-21 2 No
+Female 2nd 2-4 Ambivert 18-21 1 Yes
+Male 3rd 1-2 Introvert 18-21 1 No
+Male 3rd 1-2 Ambivert 18-21 3 No
+Male 3rd 2-4 Ambivert 18-21 1 Yes
+Male 1st 2-4 Ambivert 15-17 0 Yes
+Male 3rd 0-1 Ambivert 18-21 1 No
+Male 1st 1-2 Extrovert 15-17 0 Yes
+Female 2nd 2-4 Extrovert 18-21 1 Yes
+Female 3rd 2-4 Introvert 15-17 1 Yes
+Male Others 5+ Introvert 15-17 3 Yes
