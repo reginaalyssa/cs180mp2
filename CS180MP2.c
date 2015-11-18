@@ -82,6 +82,7 @@ int main()
 
 	/*
 		Format of initialize.txt:
+			2 					// Number of attributes
 			Outlook             // 1st Attribute
 			3                   // Number of values for 1st attribute
 			Sunny               // 1st value of 1st attribute
@@ -133,7 +134,7 @@ int main()
 		Rain Cool Normal Light Yes      // 5th input value
 	*/
 
-	file2=fopen("trainingE03.txt", "r");
+	file2=fopen("trainingE02.txt", "r");
 	if(file2==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -171,7 +172,7 @@ int main()
 			printf("%d ", values[i][j]);
 		}
 		printf("\n");
-	}*/
+	}*/ 
 
 	addSubtree(0, values, ntraining, nattributes, &train, &decisionTree);
 	node=glob.head;
@@ -180,6 +181,7 @@ int main()
 		addSubtree(node->equivalent, values, ntraining, nattributes, &train, &decisionTree);
 		node=node->globnext;
 	}
+	printf("\n");  
 
 	/*
 		Format of testing.txt:
@@ -191,7 +193,7 @@ int main()
 		Rain Cool Normal Light			// 5th input value
 	*/
 
-	file3=fopen("testingE03.txt", "r");
+	file3=fopen("testingE02.txt", "r");
 	if(file3==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -245,9 +247,7 @@ int main()
 				testcurr->testnext=findtest;
 			}
 		}
-		printf("\n");
 		classify(&test, &train, &decisionTree);
-		printf("\n");
 	}
 
 	/*for(i=0; i<nattributes-1; i++)
@@ -1256,7 +1256,7 @@ int classify(att * test, att * train, tree * decisionTree)
 	}
 	
 	decurr=decisionTree->top;
-	printf("Top: %s\n", decurr->attname);
+	//printf("Top: %s\n", decurr->attname);
 	while(decurr->equivalent!=yes->equivalent && decurr->equivalent!=no->equivalent)
 	{
 		//printf("Di pa nagyes/no. %d==%d? or %d==%d\n", decurr->equivalent, yes->equivalent, decurr->equivalent, no->equivalent);
@@ -1271,16 +1271,16 @@ int classify(att * test, att * train, tree * decisionTree)
 			curr=curr->testnext;
 		}
 		decurr=decurr->LSON;
-		printf("Move to LSON with value %s\n", decurr->attname);
+		//printf("Move to LSON with value %s\n", decurr->attname);
 		while(curr->equivalent!=decurr->equivalent)
 		{
 			decurr=decurr->RSON;
-			printf("Move to RSON with value %s\n", decurr->attname);
+			//printf("Move to RSON with value %s\n", decurr->attname);
 		}
 		decurr=decurr->LSON;
 		//printf("Value is now %s\n", decurr->attname);
 	}
-	printf("Result: %s\n", decurr->attname);
+	printf("%s\n", decurr->attname);
 
 	test->head=NULL;
 
