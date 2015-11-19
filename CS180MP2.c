@@ -134,7 +134,7 @@ int main()
 		Rain Cool Normal Light Yes      // 5th input value
 	*/
 
-	file2=fopen("trainingE02.txt", "r");
+	file2=fopen("trainingE01N01.txt", "r");
 	if(file2==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -183,6 +183,21 @@ int main()
 	}
 	printf("\n");  
 
+	// Print decision tree
+
+	node=glob.head;
+	printf("Root: %s\n", node->parent->attname);
+	while(node!=NULL)
+	{
+		printf("%s -CHILD-> %s\n", node->parent->attname, node->attname);
+		if(node->LSON!=NULL)
+		{
+			printf("%s -CHILD-> %s\n", node->attname, node->LSON->attname);
+		}
+		node=node->globnext;
+	}
+	printf("\n"); 	
+
 	/*
 		Format of testing.txt:
 		5                               // Number of values
@@ -193,7 +208,7 @@ int main()
 		Rain Cool Normal Light			// 5th input value
 	*/
 
-	file3=fopen("testingE02.txt", "r");
+	file3=fopen("testingE01N01.txt", "r");
 	if(file3==NULL)
 	{
 		printf("Missing or empty file.\n");
@@ -212,7 +227,7 @@ int main()
 			{
 				if(strcmp(strInput, curr->attname)==0)
 				{
-					printf("%s ", curr->attname);
+					//printf("%s ", curr->attname);
 					testing[j]=curr->equivalent;
 					break;
 				}
